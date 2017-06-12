@@ -1,0 +1,9 @@
+{
+  "uuid": "F0A12A62-AEA3-45B2-98C4-4D4410F53C37",
+  "name": "XcodeTool",
+  "templates": "https://github.com/TofPlay/XcodeToolTemplates.git",
+  "source": "https://raw.githubusercontent.com/TofPlay/XcodeTool/master/Templates.json",
+  "version": "0.0.1",
+  "description": "XcodeTool default templates",
+  "author": "Christophe Braud"
+}

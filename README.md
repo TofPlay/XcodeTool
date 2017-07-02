@@ -174,7 +174,7 @@ Templates available:
 
 ![image](https://user-images.githubusercontent.com/1082222/27764630-09373216-5e9e-11e7-844f-47b3f52726fc.png)
 
-For example to generate the documentation of ScriptKit:
+For example to generate the documentation of [ScriptKit](https://github.com/TofPlay/ScriptKit/tree/master/Docs):
 
 ![image](https://user-images.githubusercontent.com/1082222/27764668-fce85c46-5e9e-11e7-95ca-6c4b8d713721.png)
 

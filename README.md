@@ -12,7 +12,7 @@
 
 # What is XcodeTool?
 
-XcodeTool is a command-line utility for iOS and MacOS developers. It aims to provide a set of tools to facilitate the development of iOS and macOS applications.
+XcodeTool is a command-line utility for iOS and MacOS developers. It aims to provide a set of tools to facilitate the development of command line tools, iOS and macOS applications.
 
 # Environment
 

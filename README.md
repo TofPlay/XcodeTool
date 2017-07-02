@@ -67,6 +67,8 @@ You can use predefined templates provide with XcodeTool. You can also create you
 
 ### Create a new component cross-platform
 
+This template is base on this tutorial: [Swift Cross Platform Framework(https://github.com/TofPlay/SwiftCrossPlatformFramework)
+
 1. Create your component with the template `ComponentCrossPlatform`
 
 ![image](https://user-images.githubusercontent.com/1082222/27759520-ef3b1fa0-5e32-11e7-9682-0587c9618e4b.png)

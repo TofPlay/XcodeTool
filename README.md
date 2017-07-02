@@ -10,6 +10,27 @@
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
 ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) 
 
+---
+
+## Table of contents
+
+* [What is XcodeTool?](#what-is-xcodetool)
+* [Environment](#environment)
+* [Installation](#installation)
+  * [Manually](#manually)
+* [Command template](#command-template)
+  * [Predefined template](#predefined-templates)
+    * [Create a new component cross-platform](#create-a-new-component-cross-platform)
+    * [Create a command line tool](#create-a-command-line-tool)
+  * [Custom source](#custom-source)
+    * [Create you own source](#create-you-own-source)
+    * [Use a source as a default source](#use-a-source-as-a-default-source)
+    * [List all templates available on default sources](#list-all-templates-available-on-default-sources)
+    * [Create you own source]()
+* [Command markdown](#command-markdown)
+
+---
+
 # What is XcodeTool?
 
 XcodeTool is a command-line utility for iOS and MacOS developers. It aims to provide a set of tools to facilitate the development of command line tools, iOS and macOS applications.

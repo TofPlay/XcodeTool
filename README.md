@@ -103,7 +103,7 @@ XcodeTool will generate this project for you:
 2. Generate the json file for a new source
 
 ```
-$ XcodeTool template source gen --name=NewSource --url=https://github.com/JohnDoe/MySources/NewSource.json --templates=https://github.com/JohnDoe/NewSourceTemplates --description="All ny crazy templates" --author="John Doe"
+$ XcodeTool template source gen --name=NewSource --url=https://github.com/JohnDoe/MySources/NewSource.json --templates=https://github.com/JohnDoe/NewSourceTemplates --description="All my crazy templates" --author="John Doe"
 
  ► Source generate json
    ✔︎ json file for the new source saved a /Users/johnDoe/projects/github/MySources/NewSource.json'
@@ -117,7 +117,7 @@ $ XcodeTool template source gen --name=NewSource --url=https://github.com/JohnDo
 5. Create a json for you new crazy template
 
 ```
-$ XcodeTool template gen --name=NewTemplate --url=https://github.com/JohnDoe/NewTemplate.xtemplate.git --description="My new crazy template" --original=OrignalNameOfProject --version=1.0.0 --author-"John Doe"
+$ XcodeTool template gen --name=NewTemplate --url=https://github.com/JohnDoe/NewTemplate.xtemplate.git --description="My new crazy template" --original=NewTemplate --version=1.0.0 --author-"John Doe"
 
  ► Template generate json
    ✔︎ json file for the new template saved at '/Users/johnDoe/projects/github/NewSourceTemplates/NewTemplate.json'

@@ -73,11 +73,11 @@ You can use predefined templates provide with XcodeTool. You can also create you
 
 XcodeTool will generate this project for you:
 
-![image](https://user-images.githubusercontent.com/1082222/27764562-ba237776-5e9c-11e7-921f-acde3c1464ef.png)
+![image](https://user-images.githubusercontent.com/1082222/27770435-13626b06-5f3f-11e7-8eaf-dbd0860369d6.png)
 
 2. Open your first component cross-platform with Xcode
 
-![image](https://user-images.githubusercontent.com/1082222/27764569-de44c074-5e9c-11e7-9cb9-1dd1850a271b.png)
+![image](https://user-images.githubusercontent.com/1082222/27770423-d28803ac-5f3e-11e7-9186-b8e1ffa08492.png)
 
 ### Create a command line tool
 

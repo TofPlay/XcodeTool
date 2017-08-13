@@ -18,6 +18,7 @@
 * [Environment](#environment)
 * [Installation](#installation)
   * [Manually](#manually)
+* [Command project](#command-project)
 * [Command template](#command-template)
   * [Predefined template](#predefined-templates)
     * [Create a new component cross-platform](#create-a-new-component-cross-platform)

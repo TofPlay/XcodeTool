@@ -100,7 +100,183 @@ public  extension XcodeTool {
   
   // MARK: -> Public class methods
   
-  // MARK: --> Command template
+  // MARK: --> git methods
+
+  public class func gitSubmodule(path pPath:String, source pSource:String, replace pReplace:String) -> Bool {
+    var lRet:Bool = false
+    
+    let lCurrentDir = workdir()
+    
+    defer {
+      if exist(path: ".git.backup") {
+        if lRet == false {
+          rmdir(path: ".git")
+          rm(path: ".gitmodules")
+          mv(at: ".git.backup", to: ".git")
+          mv(at: ".gitmodules.backup", to: ".gitmodules")
+        } else {
+          rmdir(path: ".git.backup")
+          rm(path: ".gitmodules.backup")
+        }
+      }
+      chdir(path: lCurrentDir)
+    }
+    
+    guard let lGit = whereis("git") else {
+      display(type: .no, format: "git not found")
+      return lRet
+    }
+    
+    if chdir(path: pPath) == false {
+      display(type: .no, format: "folder '\(pPath)' invalid")
+      return lRet
+    }
+
+    if exist(path: ".git") && !exist(path: ".git.backup") {
+      cp(path: ".git", to: ".git.backup")
+    }
+
+    if exist(path: ".gitmodules") == false {
+      display(type: .no, format: "git: no submodules")
+      return lRet
+    } else if !exist(path: ".gitmodules.backup") {
+      cp(path: ".gitmodules", to: ".gitmodules.backup")
+    }
+    
+    var lUrl = ""
+    var lBranch = ""
+    
+    if let lLines = readLines(file: ".gitmodules") {
+      var lFound = false
+      
+      for lLine in lLines {
+        if lFound {
+          if let lVal = lLine.replace(regEx: "\\s*url = (.*)", template: "$1") {
+            lUrl = lVal.trim().replace(string: pSource, sub: pReplace)
+          }
+          if let lVal = lLine.replace(regEx: "\\s*branch = (.*)", template: "$1") {
+            lBranch = "-b " + lVal.trim()
+          }
+        } else {
+          if lLine == "[submodule \"\(pSource)\"]" {
+            lFound = true
+          }
+        }
+      }
+    }
+    
+    if lUrl.isEmpty == false {
+      let lShell = Shell()
+      
+      lRet = lShell.run("\(lGit) rm --cached \(pSource)").wait() == 0
+      
+      if lRet == false {
+        display(type: .no, format: "git: unable to rename submodule '\(pSource)' to '\(pReplace)'")
+      } else {
+        var lGlob:[String] = []
+        
+        lGlob.append(norm(path: pSource) + ".git")
+        lGlob.append(norm(path: pSource))
+        lGlob.append(".gitmodules")
+        lGlob.append(".git/config")
+        lGlob.append(".git/modules/\(pSource)/config")
+        lGlob.append(".git/modules/\(pSource)/")
+        
+        lRet = patch(glob: lGlob, original: pSource, new: pReplace)
+        
+        if lRet == false {
+          display(type: .no, format: "git: unable to rename submodule '\(pSource)' to '\(pReplace)'")
+        } else {
+          lRet = lShell.run("\(lGit) submodule add \(lBranch) \(lUrl) \(pReplace)").wait() == 0
+          
+          if lRet == false {
+            display(type: .no, format: "git: unable to rename submodule '\(pSource)' to '\(pReplace)'")
+          }
+        }
+      }
+    } else {
+      display(type: .no, format: "git: submodule '\(pSource)' not found")
+    }
+    
+    return lRet
+  }
+  
+  public class func gitSet(path pPath:String, url pUrl:String? = nil, project pProject:String? = nil) -> Int32 {
+    var lRet:Int32 = -1
+    
+    let lCurrentDir = workdir()
+    
+    defer {
+      if exist(path: ".git.backup") {
+        if lRet != 0 {
+          rmdir(path: ".git")
+          mv(at: ".git.backup", to: ".git")
+        } else {
+          rmdir(path: ".git.backup")
+        }
+      }
+      chdir(path: lCurrentDir)
+    }
+    
+    guard let lGit = whereis("git") else {
+      display(type: .no, format: "git not found")
+      return lRet
+    }
+    
+    if chdir(path: pPath) == false {
+      display(type: .no, format: "folder '\(pPath)' invalid")
+      return lRet
+    }
+    
+    var lProject = pProject
+    
+    if pUrl == nil && pProject == nil {
+      lProject = pPath.lastWord()
+    }
+    
+    if exist(path: ".git") && !exist(path: ".git.backup") {
+      cp(path: ".git", to: ".git.backup")
+    }
+    
+    var lOriginal = ""
+    
+    let lShell = Shell()
+    
+    lShell.run("\(lGit) remote -v") {
+      pLine in
+      
+      if let lUrl = pLine.replace(regEx: "^origin\\s*([^ ]*)\\s*[(]fetch[)]", template: "$1") {
+        lOriginal = lUrl
+      }
+    }
+    
+    lRet = lShell.wait()
+
+    if lRet == 0 {
+      var lNewUrl = ""
+      
+      if let lSetUrl = pUrl {
+        lNewUrl = lSetUrl
+      } else if let lRepo = lProject, let lBaseUrl = lOriginal.withoutLastWord("/") {
+        lNewUrl = lBaseUrl + "/" + lRepo
+      }
+      
+      if lNewUrl.isEmpty == false {
+        lRet = lShell.run("\(lGit) remote set-url --add origin \(lNewUrl)").wait()
+        
+        if lRet != 0 {
+          display(type: .no, format: "git: unable to set new url '\(lNewUrl)'")
+        } else {
+          lRet = lShell.run("\(lGit) remote set-url --del origin \(lOriginal)").wait()
+          
+          if lRet != 0 {
+            display(type: .no, format: "git: unable to set new url '\(lNewUrl)'")
+          }
+        }
+      }
+    }
+    return lRet
+  }
   
   public class func gitClone(url pUrl:String, branch pBranch:String? = nil, tag pTag:String? = nil, target pTarget:String, display pDisplay:Bool) -> Int32 {
     var lRet:Int32 = -1
@@ -147,6 +323,8 @@ public  extension XcodeTool {
     return lShell.wait()
   }
   
+  // MARK: --> Tools folder
+
   public class func copy(path pPath:String, branch pBranch:String? = nil, tag pTag:String? = nil, target pTarget: String, subfolder pSubfolder:String?) -> Bool {
     if exist(path: pTarget) == true {
       display(type: .yes, verbose: true, format: "remove previous target folder")
@@ -281,9 +459,17 @@ public  extension XcodeTool {
     return true
   }
   
-  public class func patch(path pPath:String, original pOriginal:String, new pNew:String, protect pProtect:[String]? = nil) -> Bool {
-    var lRet = true
+  public class func patch(path pPath:String, original pOriginal:String, new pNew:String, protect pProtect:[String]? = nil, ignore pIgnore:[String] = []) -> Bool {
     let lPath = pPath.hasSuffix("/") == false ? "\(pPath)/" : pPath
+    let lExt = ["swift","h", "m", "storyboard", "xib", "md", "plist", "pbxproj", "xcworkspacedata", "xcscheme"]
+    let lRemove = ["xcuserdata", "podspec"]
+    
+    let lRet = patch(glob: [lPath], original: pOriginal, new: pNew, ext: lExt, remove: lRemove, ignore: pIgnore, protect: pProtect)
+    return lRet
+  }
+  
+  public class func patch(glob pGlob:[String], original pOriginal:String, new pNew:String, ext pExt:[String]=[], remove pRemove:[String]=[], ignore pIgnore:[String] = [], protect pProtect:[String]? = nil) -> Bool {
+    var lRet = true
     
     let lRenamePath:(String) -> String? = {
       pPath in
@@ -301,23 +487,26 @@ public  extension XcodeTool {
       
       return lRet
     }
-    
-    for lItem in glob(path: lPath) where lRet == true {
+
+    for lItem in pGlob where lRet == true {
       if let lCurrent = lRenamePath(lItem) {
         if isDir(lCurrent) == true {
-          lRet = patch(path: lCurrent, original: pOriginal, new: pNew, protect: pProtect)
-        } else if ["xcuserdata", "podspec"].contains(ext(path: lCurrent)) {
+          let lGlob = glob(path: lCurrent).filter({ pIgnore.contains(fullname(path: $0)) == false })
+          lRet = patch(glob: lGlob, original: pOriginal, new: pNew, ext: pExt, remove: pRemove, ignore:pIgnore, protect: pProtect)
+        } else if pRemove.contains(ext(path: lCurrent)) {
           if isDir(lCurrent) == true {
             if rmdir(path: lCurrent) == false {
-              display(type: .no, format: "Unable to purge user data")
+              display(type: .no, format: "unable to purge user data")
               lRet = false
             }
           } else if rm(path: lCurrent) == false {
-            display(type: .no, format: "Unable to remove '\(lCurrent)'")
+            display(type: .no, format: "unable to remove '\(lCurrent)'")
             lRet = false
           }
-        } else if isFile(lCurrent) && ["swift","h", "m", "plist", "pbxproj", "xcworkspacedata", "xcscheme"].contains(ext(path: lCurrent)) {
-          if let lContent = readText(file: lCurrent) {
+        } else if isFile(lCurrent) {
+          let lContinue = pExt.count > 0 ? pExt.contains(ext(path: lCurrent)) : true
+          
+          if let lContent = readText(file: lCurrent), lContinue == true {
             var lProtects:[String:String] = [:]
             var lContentPatch = lContent
             
@@ -340,26 +529,97 @@ public  extension XcodeTool {
             
             if lContentPatch != lContent {
               if writeText(file: lCurrent, string: lContentPatch) == false {
-                display(type: .no, format: "Unable to patch '\(lItem)'")
+                display(type: .no, format: "unable to patch '\(lItem)'")
                 lRet = false
               }
             }
           }
         }
       } else {
-        display(type: .no, format: "Unable to handle '\(lItem)'")
+        display(type: .no, format: "unable to handle '\(lItem)'")
         lRet = false
       }
-    }
-    
-    if lRet == true && lRenamePath(pPath) == nil {
-      display(type: .no, format: "Unable to handle '\(pPath)'")
-      lRet = false
     }
     
     return lRet
   }
   
+  public class func header(path pPath:String, createdBy pCreatedBy:String?, createdAt pCreatedAt:String?, copyRightYear pCopyRightYear:String?, copyRightName pCopyRightName:String?) -> Bool {
+    var lRet = true
+    
+    if pCreatedBy != nil || pCreatedAt != nil || pCopyRightYear != nil || pCopyRightName != nil {
+      let lWorkdir = workdir()
+
+      if chdir(path: pPath) {
+        let lFiles = glob(path: ".*\\.(h|swift)", recursive: true)
+        
+        for lCpt in 0..<lFiles.count  where lRet == true {
+          let lFile = lFiles[lCpt]
+          
+          display(type: .compute, format: "header processing \(lCpt+1)/\(lFiles.count) file%@", lFiles.count > 1 ? "s" : "")
+          
+          if var lLines = readLines(file: lFile) {
+            var lUpdated = false
+            
+            for lI in 0..<lLines.count {
+              var lLine = lLines[lI]
+              
+              if lLine.isEmpty {
+                break
+              }
+              
+              if let lCreatedBy = pCreatedBy {
+                if let lNew = lLine.replace(regEx: "//(\\s*)Created by [\\s\\w]*on (\\d*/\\d*/\\d*.*)", template: "//$1Created by \(lCreatedBy) on $2") {
+                  lLines[lI] = lNew
+                  lLine = lNew
+                  lUpdated = true
+                }
+              }
+              
+              if let lCreatedAt = pCreatedAt {
+                if let lNew = lLine.replace(regEx: "(//\\s*Created by [\\s\\w]*on) \\d*/\\d*/\\d*(.*)", template: "$1 \(lCreatedAt)$2") {
+                  lLines[lI] = lNew
+                  lLine = lNew
+                  lUpdated = true
+                }
+              }
+              
+              if let lCopyRightYear = pCopyRightYear {
+                if let lNew = lLine.replace(regEx: "(//\\s*Copyright ©) \\d* (.*)", template: "$1 \(lCopyRightYear) $2") {
+                  lLines[lI] = lNew
+                  lLine = lNew
+                  lUpdated = true
+                }
+              }
+              
+              if let lCopyRightName = pCopyRightName {
+                if let lNew = lLine.replace(regEx: "(//\\s*Copyright © \\d*) [^\\.]*. (.*)", template: "$1 \(lCopyRightName). $2") {
+                  lLines[lI] = lNew
+                  lLine = lNew
+                  lUpdated = true
+                }
+              }
+            }
+            
+            if lUpdated {
+              if writeText(file: lFile, lines: lLines) == false {
+                display(type: .warning, format: "header unable to save '\(lFile)'")
+              }
+            }
+          }
+        }
+        
+        chdir(path: lWorkdir)
+      } else {
+        lRet = false
+      }
+    }
+
+    return lRet
+  }
+  
+  // MARK: --> Initialize XcodeTool
+
   public class func initialize() -> Bool {
     var lRet = true
     
@@ -430,6 +690,8 @@ public  extension XcodeTool {
     
     return lRet
   }
+  
+  // MARK: --> Sources methods
   
   public class func source(file pFile:String) -> Source? {
     var lRet:Source? = nil
@@ -513,6 +775,8 @@ public  extension XcodeTool {
     return lRet
   }
   
+  // MARK: --> Template methods
+
   public class func templates(source pSource:String? = nil) -> [Template] {
     var lRet:[Template] = []
     
@@ -541,7 +805,7 @@ public  extension XcodeTool {
     return lRet
   }
   
-  // MARK: --> Command markdown
+  // MARK: --> Markdown methods
   
   public class func generateMarkdown(items pItems:[Markdown], indent pIndent:Int = 0) -> String {
     var lRet = ""

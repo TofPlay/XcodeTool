@@ -3,8 +3,8 @@
 </p>
 
 
-![macOS](https://img.shields.io/badge/macOS-10.12.5-6193DF.svg)
-![Xcode](https://img.shields.io/badge/Xcode-9.0%20beta%202-6193DF.svg)
+![macOS](https://img.shields.io/badge/macOS-10.12.6-6193DF.svg)
+![Xcode](https://img.shields.io/badge/Xcode-9.0%20beta%204-6193DF.svg)
 ![Swift Version](https://img.shields.io/badge/Swift-4.0-orange.svg) 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) 
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
@@ -35,11 +35,6 @@
 
 XcodeTool is a command-line utility for iOS and MacOS developers. It aims to provide a set of tools to facilitate the development of command line tools, iOS and macOS applications.
 
-# Environment
-
-- Xcode 9 Beta 2
-- Swift 4
-
 # Installation 
 
 ## Manually
@@ -54,7 +49,13 @@ $ cp -v ./.build/release/XcodeTool /usr/local/bin/XcodeTool
 
 When you launch XcodeTool on the terminal you should see this screen
 
-![image](https://user-images.githubusercontent.com/1082222/27733700-c21741a2-5d97-11e7-9b69-7deb9c252ea3.png)
+![image](https://user-images.githubusercontent.com/1082222/29222154-a3d50aa8-7ec1-11e7-931e-00e46cd1189a.png)
+
+# Command project
+
+![image](https://user-images.githubusercontent.com/1082222/29222610-80edca32-7ec3-11e7-87bb-9cc9e3de15fe.png)
+
+With this command you can rename a class or a project. Change the git url or rename a git submodule.
 
 # Command template
 

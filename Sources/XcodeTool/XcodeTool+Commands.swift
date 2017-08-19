@@ -161,8 +161,8 @@ public  extension XcodeTool {
       
       display(type: .yes, verbose: true, format: "original project name: '\(lOriginal)'")
       
-      let lBranch = lTemplate.branch
-      let lTag = lTemplate.tag
+      let lBranch = pVars["branch"] ?? lTemplate.branch
+      let lTag = pVars["tag"] ?? lTemplate.tag
       
       if lBranch != nil {
         display(type: .yes, verbose: true, format: "branch: '\(lBranch!)'")

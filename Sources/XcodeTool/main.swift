@@ -34,7 +34,7 @@ public class XcodeTool : ScriptKit {
   // MARK: -
   
   public class func main() {
-    program(version: "0.0.2 Beta", owner: "Christophe Braud", year: "2017", info: "Collection of tools for Xcode projects")
+    program(version: "0.0.3 Beta", owner: "Christophe Braud", year: "2017", info: "Collection of tools for Xcode projects")
     
       cmd("project", title: "Actions on projects")
         begin()
@@ -55,6 +55,8 @@ public class XcodeTool : ScriptKit {
         option(short: "n", long: "name", variable: "name", value: "name", optional: false, title: "Name of the template")
         option(short: "t", long: "target", variable: "target", value: "directory", optional: false, title: "Target directory where the project is cloned. The last folder is also the name of the project.")
         option(short: "x", long: "xcode", variable: "xcode", optional: true, title: "Generate Xcode project for template base on SwiftPM")
+        option(short: "b", long: "branch", variable: "branch", optional: true, title: "Use a specific branch of the template")
+        option(short: "a", long: "tag", variable: "tag", optional: true, title: "Use a specific tag of the template")
         option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
         option(long: "createdBy", variable: "createdBy", value: "owner", optional: true, title: "Specify the owner")
         option(long: "createdAt", variable: "createdAt", value: "DD/MM/YYYY", optional: true, title: "Specify the creation date")

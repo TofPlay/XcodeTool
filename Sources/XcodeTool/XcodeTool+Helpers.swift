@@ -152,7 +152,7 @@ public  extension XcodeTool {
       for lLine in lLines {
         if lFound {
           if let lVal = lLine.replace(regEx: "\\s*url = (.*)", template: "$1") {
-            lUrl = lVal.trim().replace(string: pSource, sub: pReplace)
+            lUrl = lVal.trim().replace(search: pSource, with: pReplace)
           }
           if let lVal = lLine.replace(regEx: "\\s*branch = (.*)", template: "$1") {
             lBranch = "-b " + lVal.trim()
@@ -292,7 +292,7 @@ public  extension XcodeTool {
       lShell.run("'\(lGit)' clone --progress \"\(pUrl)\" \"\(pTarget)\"", readLine: {
         pLine in
         if pLine.contains("Receiving objects:") {
-          print("git: \(pLine)\r")
+          display(type: .compute, format: "git: %@", pLine)
         }
       })
     } else {

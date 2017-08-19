@@ -4,7 +4,7 @@
 
 
 ![macOS](https://img.shields.io/badge/macOS-10.12.6-6193DF.svg)
-![Xcode](https://img.shields.io/badge/Xcode-9.0%20beta%204-6193DF.svg)
+![Xcode](https://img.shields.io/badge/Xcode-9.0%20beta%205-6193DF.svg)
 ![Swift Version](https://img.shields.io/badge/Swift-4.0-orange.svg) 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) 
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
@@ -45,7 +45,7 @@ Open a terminal and excute these commands:
 $ git clone https://github.com/TofPlay/XcodeTool 
 $ cd XcodeTool
 $ swift build -c release 
-$ cp -v ./.build/release/XcodeTool /usr/local/bin/XcodeTool
+$ cp -v ./.build/x86_64-apple-macosx10.10/release/XcodeTool  /usr/local/bin/XcodeTool
 ```
 
 When you launch XcodeTool on the terminal you should see this screen

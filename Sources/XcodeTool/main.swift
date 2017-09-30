@@ -34,7 +34,7 @@ public class XcodeTool : ScriptKit {
   // MARK: -
   
   public class func main() {
-    program(version: "0.0.3 Beta", owner: "Christophe Braud", year: "2017", info: "Collection of tools for Xcode projects")
+    program(version: "1.0.0", owner: "Christophe Braud", year: "2017", info: "Collection of tools for Xcode projects")
     
       cmd("project", title: "Actions on projects")
         begin()

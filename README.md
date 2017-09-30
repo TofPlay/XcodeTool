@@ -1,10 +1,10 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/1082222/27725873-94b4bf92-5d78-11e7-834c-536dfc682007.png" alt="ScriptKit" />
+    <img src="https://user-images.githubusercontent.com/1082222/30913661-4900771c-a391-11e7-9f4c-e2d51ddd451b.jpg" alt="ScriptKit" />
 </p>
 
 
 ![macOS](https://img.shields.io/badge/macOS-10.12.6-6193DF.svg)
-![Xcode](https://img.shields.io/badge/Xcode-9.0%20beta%205-6193DF.svg)
+![Xcode](https://img.shields.io/badge/Xcode-9.0-6193DF.svg)
 ![Swift Version](https://img.shields.io/badge/Swift-4.0-orange.svg) 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) 
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)

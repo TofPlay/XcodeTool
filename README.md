@@ -151,7 +151,7 @@ Sources available:
 
   XcodeTool: XcodeTool default templates
 
-  NewSource: All ny crazy templates
+  NewSource: All my crazy templates
 
 Default sources: XcodeTool
 ```
@@ -174,7 +174,7 @@ Sources available:
 
   XcodeTool: XcodeTool default templates
 
-  NewSource: All ny crazy templates
+  NewSource: All my crazy templates
 
 Default sources: XcodeTool, NewSource
 ```

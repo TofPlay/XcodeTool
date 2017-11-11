@@ -4,8 +4,8 @@
 
 
 ![macOS](https://img.shields.io/badge/macOS-10.12.6-6193DF.svg)
-![Xcode](https://img.shields.io/badge/Xcode-9.0-6193DF.svg)
-![Swift Version](https://img.shields.io/badge/Swift-4.0-orange.svg) 
+![Xcode](https://img.shields.io/badge/Xcode-9.1-6193DF.svg)
+![Swift Version](https://img.shields.io/badge/Swift-4.0.2-orange.svg) 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) 
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
 ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) 
@@ -29,6 +29,7 @@
     * [List all templates available on default sources](#list-all-templates-available-on-default-sources)
     * [Create you own source]()
 * [Command markdown](#command-markdown)
+* [Command simulator](#command-simulator)
 
 ---
 
@@ -50,11 +51,11 @@ $ cp -v ./.build/x86_64-apple-macosx10.10/release/XcodeTool  /usr/local/bin/Xcod
 
 When you launch XcodeTool on the terminal you should see this screen
 
-![image](https://user-images.githubusercontent.com/1082222/29222154-a3d50aa8-7ec1-11e7-931e-00e46cd1189a.png)
+![image](https://user-images.githubusercontent.com/1082222/32665691-731d98ba-c635-11e7-9ecb-fa66b2719657.png)
 
 # Command project
 
-![image](https://user-images.githubusercontent.com/1082222/29222610-80edca32-7ec3-11e7-87bb-9cc9e3de15fe.png)
+![image](https://user-images.githubusercontent.com/1082222/32666510-f0f47b08-c637-11e7-9eaa-5c98bc180ab7.png)
 
 With this command you can rename a class or a project. Change the git url or rename a git submodule.
 
@@ -73,7 +74,7 @@ This template is base on tutorial: [Swift Cross Platform Framework](https://gith
 
 1. Create your component with the template `ComponentCrossPlatform`
 
-![image](https://user-images.githubusercontent.com/1082222/27759520-ef3b1fa0-5e32-11e7-9682-0587c9618e4b.png)
+![test](https://user-images.githubusercontent.com/1082222/32666874-32bf647a-c639-11e7-8ec1-1c31cec19d18.jpg)
 
 XcodeTool will generate this project for you:
 
@@ -87,7 +88,7 @@ XcodeTool will generate this project for you:
 
 1. To generate your first command line tool project:
 
-![image](https://user-images.githubusercontent.com/1082222/27724091-73f510c0-5d70-11e7-83d7-4432e690cbaf.png)
+![test1](https://user-images.githubusercontent.com/1082222/32666965-8db685fc-c639-11e7-881a-ff32eeb9bee9.jpg)
 
 XcodeTool will generate this project for you:
 
@@ -197,11 +198,11 @@ Templates available:
 
 # Command markdown
 
-![image](https://user-images.githubusercontent.com/1082222/27764630-09373216-5e9e-11e7-844f-47b3f52726fc.png)
+![image](https://user-images.githubusercontent.com/1082222/32667050-d1bfae22-c639-11e7-945e-3a048baf67d7.png)
 
 For example to generate the documentation of [ScriptKit](https://github.com/TofPlay/ScriptKit/tree/master/Docs):
 
-![image](https://user-images.githubusercontent.com/1082222/27764668-fce85c46-5e9e-11e7-95ca-6c4b8d713721.png)
+![image](https://user-images.githubusercontent.com/1082222/32667135-1b1724ba-c63a-11e7-9746-4c0aa8ea7fc3.png)
 
 That generate the folder `Docs` in the project
 
@@ -210,3 +211,16 @@ That generate the folder `Docs` in the project
 And on the folder for each swift source we have mardown
 
 ![image](https://user-images.githubusercontent.com/1082222/27764685-8f654f2a-5e9f-11e7-946f-1ae41901f3ea.png)
+
+# Command simulator
+
+![image](https://user-images.githubusercontent.com/1082222/32667188-482c7608-c63a-11e7-8dd1-199ccd364b45.png)
+
+This command will regenerate all simulators 
+
+![image](https://user-images.githubusercontent.com/1082222/32666338-662f0628-c637-11e7-97f4-9ff5d3fefd05.png)
+
+For example on iOS project you will see
+
+![image](https://user-images.githubusercontent.com/1082222/32665911-140eabf6-c636-11e7-9ddd-2c9b589c916e.png)
+

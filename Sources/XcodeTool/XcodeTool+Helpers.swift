@@ -3,7 +3,7 @@
 //  XcodeTool
 //
 //  Created by Christophe Braud on 11/06/2017.
-//  Base on Tof Templates (https://goo.gl/GdyFiw)
+//  Base on Tof Templates (https://bit.ly/2OWAgmb)
 //  Copyright © 2017 Christophe Braud. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import Foundation
 // MARK: -
 // MARK: XcodeTool extension
 // MARK: -
-public  extension XcodeTool {
+public extension XcodeTool {
   // MARK: -
   // MARK: Public access
   // MARK: -
@@ -23,220 +23,16 @@ public  extension XcodeTool {
   
   // MARK: -> Public class
   
-  // MARK: --> Command template
-  
-  public class Source : Codable {
-    public var uuid:String!
-    public var name:String!
-    public var source:String!
-    public var templates:String!
-    public var description:String!
-    public var version:String? = nil
-    public var author:String? = nil
-  }
-  
-  public class Template : Codable {
-    public var name:String!
-    public var url:String!
-    public var description:String!
-    public var branch:String? = nil
-    public var tag:String? = nil
-    public var subfolder:String? = nil
-    public var original:String? = nil
-    public var protect:[String]? = nil
-    public var author:String? = nil
-    public var version:String? = nil
-  }
-  
-  // MARK: --> Command markdown
-  
-  public class Markdown {
-    public enum SubSection {
-      case none
-      case same
-      case up
-      case down
-    }
-    public static var stack:[Markdown] = []
-    public static var items:[Markdown] = []
-    
-    public var level:Int
-    public var summary:String
-    public var markdown:[String] = []
-    public var items:[Markdown] = []
-    public var section:Bool = false
-    public var subSection:SubSection = .none
-    
-    init(level pLevel:Int, summary pSummary:String, markdown pMarkdown:[String]) {
-      self.level = pLevel
-      self.summary = pSummary
-      self.markdown = pMarkdown
-    }
-  }
-  
-  public class DeviceType {
-    public var name:String
-    public var id: String
-    
-    init(name pName:String, id pId:String) {
-      self.name = pName
-      self.id = pId
-    }
-  }
-  
-  public class Runtime {
-    public var name:String
-    public var id: String
-    
-    init(name pName:String, id pId:String) {
-      self.name = pName
-      self.id = pId
-    }
-  }
-  
-  public class Device {
-    public var name:String
-    public var id: String
-    
-    init(name pName:String, id pId:String) {
-      self.name = pName
-      self.id = pId
-    }
-  }
-  
   // MARK: -> Public type alias
   
   // MARK: -> Public static properties
-  
-  // MARK: --> Command template
-  
-  public static var pathRoot:String {
-    return  applicationSupportDirectory + "XcodeTool/"
-  }
-  
-  public static var pathSources:String {
-   return  pathRoot + "Sources/"
-  }
-  
-  public static var pathTemplates:String {
-    return pathRoot + "Templates/"
-  }
-  
-  public static var defaulfSources:[String] = ["XcodeTool"]
-  
-  // MARK: --> Command markdown
   
   // MARK: -> Public properties
   
   // MARK: -> Public class methods
   
-  // MARK: --> Xcode methods
-  
-  public class func xcodeVersion() -> String {
-    var lRet = ""
-
-    if let lXcodeBuild = whereis("xcodebuild") {
-      let lShell = Shell()
-      
-      lShell.run("\(lXcodeBuild) -version").wait()
-
-      for lLine in lShell.stdout {
-        let lResult = lLine.extract(regEx: "Xcode ([\\d.]*)")
-        
-        if lResult.count == 1 {
-          lRet = lResult[0].trim()
-          break
-        }
-      }
-    }
-    
-    return lRet
-  }
-  
-  // MARK: --> simulator methods
-  
-  public class func simExist() -> Bool {
-    let lRet = whereis("xcrun") != nil
-    return lRet
-  }
-  
-  public class func simDeviceTypes() -> [DeviceType]? {
-    var lRet:[DeviceType]? = nil
-
-    if simExist() {
-      let lShell = Shell()
-      
-      lShell.run("xcrun simctl list devicetypes").wait()
-      
-      for lLine in lShell.stdout {
-        let lResult = lLine.extract(regEx: "([^\\(]*)\\s\\(([^\\)]*)\\)")
-        
-        if lResult.count == 2 {
-          if lRet == nil {
-            lRet = []
-          }
-          
-          let lDeviceType = DeviceType(name: lResult[0], id: lResult[1])
-          lRet!.append(lDeviceType)
-        }
-      }
-    }
-      
-    return lRet
-  }
-  
-  public class func simRuntimes() -> [Runtime]? {
-    var lRet:[Runtime]? = nil
-
-    if simExist() {
-      let lShell = Shell()
-      
-      lShell.run("xcrun simctl list runtimes").wait()
-      
-      for lLine in lShell.stdout {
-        let lResult = lLine.extract(regEx: "([^\\(]*)\\s.* - (.*)")
-        
-        if lResult.count == 2 {
-          if lRet == nil {
-            lRet = []
-          }
-
-          let lRuntime = Runtime(name: lResult[0], id: lResult[1])
-          lRet!.append(lRuntime)
-        }
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func simDevices() -> [Device]? {
-    var lRet:[Device]? = nil
-    
-    if simExist() {
-      let lShell = Shell()
-      
-      lShell.run("xcrun simctl list devices").wait()
-        
-      for lLine in lShell.stdout {
-        let lResult = lLine.extract(regEx: "\\s*(.*)\\s\\((\\w{8}\\-\\w{4}\\-\\w{4}\\-\\w{4}\\-\\w{12}).*")
-        
-        if lResult.count == 2 {
-          if lRet == nil {
-            lRet = []
-          }
-          
-          let lDevice = Device(name: lResult[0], id: lResult[1])
-          lRet!.append(lDevice)
-        }
-      }
-    }
-    
-    return lRet
-  }
-  
   // MARK: --> git methods
-
+  
   public class func gitSubmodule(path pPath:String, source pSource:String, replace pReplace:String) -> Bool {
     var lRet:Bool = false
     
@@ -266,11 +62,11 @@ public  extension XcodeTool {
       display(type: .no, format: "folder '\(pPath)' invalid")
       return lRet
     }
-
+    
     if exist(path: ".git") && !exist(path: ".git.backup") {
       cp(path: ".git", to: ".git.backup")
     }
-
+    
     if exist(path: ".gitmodules") == false {
       display(type: .no, format: "git: no submodules")
       return lRet
@@ -287,7 +83,7 @@ public  extension XcodeTool {
       for lLine in lLines {
         if lFound {
           if let lVal = lLine.replace(regEx: "\\s*url = (.*)", template: "$1") {
-            lUrl = lVal.trim().replace(search: pSource, with: pReplace)
+            lUrl = lVal.trim().replace(string: pSource, sub: pReplace)
           }
           if let lVal = lLine.replace(regEx: "\\s*branch = (.*)", template: "$1") {
             lBranch = "-b " + lVal.trim()
@@ -386,7 +182,7 @@ public  extension XcodeTool {
     }
     
     lRet = lShell.wait()
-
+    
     if lRet == 0 {
       var lNewUrl = ""
       
@@ -459,7 +255,7 @@ public  extension XcodeTool {
   }
   
   // MARK: --> Tools folder
-
+  
   public class func copy(path pPath:String, branch pBranch:String? = nil, tag pTag:String? = nil, target pTarget: String, subfolder pSubfolder:String?) -> Bool {
     if exist(path: pTarget) == true {
       display(type: .yes, verbose: true, format: "remove previous target folder")
@@ -613,7 +409,7 @@ public  extension XcodeTool {
       let lName = fullname(path: pPath)
       
       if lName.contains(pOriginal) == true {
-        lRet = dir(path: pPath) + lName.replace(search: pOriginal, with: pNew)
+        lRet = dir(path: pPath) + lName.replace(string: pOriginal, sub: pNew)
         
         if mv(at: pPath, to: lRet!) == false {
           lRet = nil
@@ -622,7 +418,7 @@ public  extension XcodeTool {
       
       return lRet
     }
-
+    
     for lItem in pGlob where lRet == true {
       if let lCurrent = lRenamePath(lItem) {
         if isDir(lCurrent) == true {
@@ -650,15 +446,15 @@ public  extension XcodeTool {
               lProtects = Dictionary(uniqueKeysWithValues: zip(lUuids, lProtect))
               
               for (lUuid, lValue) in lProtects {
-                lContentPatch = lContentPatch.replace(search: lValue, with: lUuid)
+                lContentPatch = lContentPatch.replace(string: lValue, sub: lUuid)
               }
             }
             
-            lContentPatch = lContentPatch.replace(search: pOriginal, with: pNew)
+            lContentPatch = lContentPatch.replace(string: pOriginal, sub: pNew)
             
             if lProtects.count > 0 {
               for (lUuid, lValue) in lProtects {
-                lContentPatch = lContentPatch.replace(search: lUuid, with: lValue)
+                lContentPatch = lContentPatch.replace(string: lUuid, sub: lValue)
               }
             }
             
@@ -684,7 +480,7 @@ public  extension XcodeTool {
     
     if pCreatedBy != nil || pCreatedAt != nil || pCopyRightYear != nil || pCopyRightName != nil {
       let lWorkdir = workdir()
-
+      
       if chdir(path: pPath) {
         let lFiles = glob(path: ".*\\.(h|swift)", recursive: true)
         
@@ -749,12 +545,12 @@ public  extension XcodeTool {
         lRet = false
       }
     }
-
+    
     return lRet
   }
   
   // MARK: --> Initialize XcodeTool
-
+  
   public class func initialize() -> Bool {
     var lRet = true
     
@@ -826,195 +622,14 @@ public  extension XcodeTool {
     return lRet
   }
   
-  // MARK: --> Sources methods
-  
-  public class func source(file pFile:String) -> Source? {
-    var lRet:Source? = nil
-    
-    if let lData = readData(file: pFile) {
-      do {
-        lRet = try JSONDecoder().decode(Source.self, from: lData)
-      } catch let lError {
-        self.error = lError
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func source(url pUrl:String, save pSave:Bool=false) -> Source? {
-    var lRet:Source? = nil
-    var lUrl = pUrl
-    
-    if isFile(pUrl) {
-      lUrl = "file://" + pUrl
-    }
-    
-    if let lData = readData(url: lUrl) {
-      do {
-        lRet = try JSONDecoder().decode(Source.self, from: lData)
-        if pSave == true, let lName = lRet?.name, let lUuid = lRet?.uuid, let lUrl = lRet?.templates {
-          let lPathSource = pathSources + "\(lName).json"
-          let lPathTemplates = pathTemplates + "\(lUuid)/"
-          
-          if writeData(file: lPathSource, data: lData) == false {
-            lRet = nil
-          } else {
-            if isDir(lPathTemplates) {
-              if gitPull(path: lPathTemplates) != 0 {
-                lRet = nil
-              }
-            } else {
-              if gitClone(url: lUrl, target: lPathTemplates, display: false) != 0 {
-                lRet = nil
-              }
-            }
-          }
-        }
-      } catch let lError {
-        self.error = lError
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func source(name pName:String) -> Source? {
-    let lPathSource = pathSources + "\(pName).json"
-    return source(file: lPathSource)
-  }
-  
-  public class func template(file pFile:String) -> Template? {
-    var lRet:Template? = nil
-    
-    if let lData = readData(file: pFile) {
-      do {
-        lRet = try JSONDecoder().decode(Template.self, from: lData)
-      } catch let lError {
-        self.error = lError
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func sources() -> [Source] {
-    var lRet:[Source] = []
-    
-    for lFile in glob(path: pathSources + ".*\\.json", absPath: true) {
-      if let lSource = source(file: lFile) {
-        lRet.append(lSource)
-      }
-    }
-    
-    return lRet
-  }
-  
-  // MARK: --> Template methods
 
-  public class func templates(source pSource:String? = nil) -> [Template] {
-    var lRet:[Template] = []
-    
-    var lPathTemplates = pathTemplates
-    
-    if let lName = pSource, let lSource = source(file: pathSources + lName + ".json"), let lUuid = lSource.uuid {
-      lPathTemplates += lUuid + "/.*\\.json"
-    }
-    
-    for lFile in glob(path: lPathTemplates, absPath: true) {
-      if let lTemplate = template(file: lFile) {
-        lRet.append(lTemplate)
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func templates(sources pSources:[String]) -> [Template] {
-    var lRet:[Template] = []
-    
-    for lSource in pSources {
-      lRet.append(contentsOf: templates(source: lSource))
-    }
-    
-    return lRet
-  }
-  
   // MARK: --> Markdown methods
-  
-  public class func generateMarkdown(items pItems:[Markdown], indent pIndent:Int = 0) -> String {
-    var lRet = ""
-    
-    for lItem in pItems {
-      
-      if lItem.section {
-        for lI in 0..<(lItem.markdown.count) {
-          let lLine = lItem.markdown[lI]
-          
-          if lI == 0 {
-            let lPad = String(repeating:"#", count: pIndent)
-            lRet += "##\(lPad) \(lItem.summary.trim())\n\n"
-            
-            if lItem.summary.contains("extension") == false {
-              lRet += "\(lLine)\n"
-            }
-          } else {
-            lRet += "\(lLine)\n"
-          }
-        }
-        
-        lRet += "\n"
-      } else if lItem.subSection != .none {
-        var lIndent = pIndent
-        
-        switch lItem.subSection {
-        case .down:
-          if lIndent > 0 {
-            lIndent -= 1
-          }
-        case .up:
-          lIndent += 1
-        default:
-          break
-        }
-        
-        let lPad = String(repeating:"#", count: lIndent)
-        lRet += "##\(lPad) \(lItem.summary.trim())\n\n"
-      } else {
-        lRet += "<details>\n"
-        lRet += "<summary>\(lItem.summary.trim())</summary>\n\n"
-        for lLine in lItem.markdown {
-          lRet += "\(lLine)\n"
-        }
-        lRet += "</details>\n\n"
-      }
-      
-      if lItem.items.count > 0 {
-        lRet += generateMarkdown(items: lItem.items, indent: pIndent + 1)
-      }
-    }
-    
-    return lRet
-  }
-  
-  public class func generate(file pFile:String) -> Void {
-    let lMarkdown = generateMarkdown(items: Markdown.items)
-    
-    if writeText(file: pFile, string: lMarkdown) == false {
-      display(type: .no, format: "unable to save '\(pFile)'")
-    }
-    
-    Markdown.stack = []
-    Markdown.items = []
-  }
   
   // MARK: -> Public init methods
   
   // MARK: -> Public operators
   
   // MARK: -> Public methods
-  
-  // MARK: -> Public implementation protocol <#protocol name#>
   
   // MARK: -
   // MARK: Internal access (aka public for current module)
@@ -1026,7 +641,7 @@ public  extension XcodeTool {
   
   // MARK: -> Internal class
   
-  // MARK: -> Internal type alias 
+  // MARK: -> Internal type alias
   
   // MARK: -> Internal static properties
   
@@ -1037,35 +652,9 @@ public  extension XcodeTool {
   // MARK: -> Internal init methods
   
   // MARK: -> Internal operators
-
+  
   // MARK: -> Internal methods
   
-  // MARK: -> Internal implementation protocol <#protocol name#>
-  
-  // MARK: -
-  // MARK: File Private access
-  // MARK: -
-  
-  // MARK: -> File Private enums
-  
-  // MARK: -> File Private structs
-  
-  // MARK: -> File Private class
-  
-  // MARK: -> File Private type alias 
-
-  // MARK: -> File Private static properties
-
-  // MARK: -> File Private properties
-  
-  // MARK: -> File Private class methods
-  
-  // MARK: -> File Private init methods
-  
-  // MARK: -> File Private operators
-
-  // MARK: -> File Private methods
-
   // MARK: -
   // MARK: Private access
   // MARK: -
@@ -1076,10 +665,10 @@ public  extension XcodeTool {
   
   // MARK: -> Private class
   
-  // MARK: -> Private type alias 
-
+  // MARK: -> Private type alias
+  
   // MARK: -> Private static properties
-
+  
   // MARK: -> Private properties
   
   // MARK: -> Private class methods
@@ -1087,6 +676,7 @@ public  extension XcodeTool {
   // MARK: -> Private init methods
   
   // MARK: -> Private operators
-
+  
   // MARK: -> Private methods
 }
+

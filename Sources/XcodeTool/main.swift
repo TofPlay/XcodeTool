@@ -3,7 +3,7 @@
 //  XcodeTool
 //
 //  Created by Christophe Braud on 11/06/2017.
-//  Base on Tof Templates (https://goo.gl/GdyFiw)
+//  Base on Tof Templates (https://bit.ly/2OWAgmb)
 //  Copyright © 2017 Christophe Braud. All rights reserved.
 //
 
@@ -34,7 +34,7 @@ public class XcodeTool : ScriptKit {
   // MARK: -
   
   public class func main() {
-    program(version: "1.0.1", owner: "Christophe Braud", year: "2017", info: "Collection of tools for Xcode projects")
+    program(version: "1.0.2", owner: "Christophe Braud", year: "2018", info: "Collection of tools for Xcode projects")
     
       cmd("project", title: "Actions on projects")
         begin()
@@ -160,8 +160,6 @@ public class XcodeTool : ScriptKit {
   
   // MARK: -> Public methods
   
-  // MARK: -> Public implementation protocol <#protocol name#>
-  
   // MARK: -
   // MARK: Internal access (aka public for current module)
   // MARK: -
@@ -185,32 +183,6 @@ public class XcodeTool : ScriptKit {
   // MARK: -> Internal operators
   
   // MARK: -> Internal methods
-  
-  // MARK: -> Internal implementation protocol <#protocol name#>
-  
-  // MARK: -
-  // MARK: File Private access
-  // MARK: -
-  
-  // MARK: -> File Private enums
-  
-  // MARK: -> File Private structs
-  
-  // MARK: -> File Private class
-  
-  // MARK: -> File Private type alias
-  
-  // MARK: -> File Private static properties
-  
-  // MARK: -> File Private properties
-  
-  // MARK: -> File Private class methods
-  
-  // MARK: -> File Private init methods
-  
-  // MARK: -> File Private operators
-  
-  // MARK: -> File Private methods
   
   // MARK: -
   // MARK: Private access

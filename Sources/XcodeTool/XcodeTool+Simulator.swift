@@ -2,7 +2,7 @@
 //  XcodeTool+Simulator.swift
 //  XcodeTool
 //
-//  Created by me on 04/02/2018.
+//  Created by Christophe Braud on 04/02/2018.
 //  Base on Tof Templates (https://bit.ly/2OWAgmb)
 //
 //
@@ -96,7 +96,7 @@ public extension XcodeTool {
       lShell.run("xcrun simctl list devicetypes").wait()
       
       for lLine in lShell.stdout {
-        let lResult = lLine.extract(regEx: "([^\\(]*)\\s\\(([^\\)]*)\\)")
+        let lResult = lLine.extract(regEx: "(.*) \\((com.apple.CoreSimulator.*)\\)")
         
         if lResult.count == 2 {
           if lRet == nil {

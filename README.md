@@ -51,17 +51,18 @@ $ cp -v ./.build/x86_64-apple-macosx10.10/release/XcodeTool  /usr/local/bin/Xcod
 
 When you launch XcodeTool on the terminal you should see this screen
 
-![image](https://user-images.githubusercontent.com/1082222/32665691-731d98ba-c635-11e7-9ecb-fa66b2719657.png)
+![image](https://user-images.githubusercontent.com/1082222/49682853-8d39bd80-fabb-11e8-92c1-627adabdcf22.png)
 
 # Command project
 
 ![image](https://user-images.githubusercontent.com/1082222/32666510-f0f47b08-c637-11e7-9eaa-5c98bc180ab7.png)
+![image](https://user-images.githubusercontent.com/1082222/49854706-5d582600-fdeb-11e8-821c-73bcc33837c9.png)
 
 With this command you can rename a class or a project. Change the git url or rename a git submodule.
 
 # Command template
 
-![image](https://user-images.githubusercontent.com/1082222/27759376-cc0c1bae-5e2f-11e7-843b-80680183f334.png)
+![image](https://user-images.githubusercontent.com/1082222/49854767-8ed0f180-fdeb-11e8-9643-80e21f4319a1.png)
 
 `template` is a command to create projets base on template projects. 
 You can use predefined templates provide with XcodeTool. You can also create you own sources and your own templates.
@@ -213,14 +214,460 @@ And on the folder for each swift source we have mardown
 ![image](https://user-images.githubusercontent.com/1082222/27764685-8f654f2a-5e9f-11e7-946f-1ae41901f3ea.png)
 
 # Command simulator
+Some commands are available for the simlator
 
-![image](https://user-images.githubusercontent.com/1082222/32667188-482c7608-c63a-11e7-8dd1-199ccd364b45.png)
+```
+$ XcodeTool simulator 
 
+Manipulate Xcode simulators
+
+Optional:
+  --help  current screen
+
+Sub-commands:
+  list        List runtimes and devices
+  register    Register devices or runtimes
+  unregister  Unregister devices or runtimes
+  regenerate  Regenerate all Xcode simulators
+```
+
+You can list runtimes or devices
+
+```
+$ XcodeTool simulator list
+
+List runtimes and devices
+
+Optional:
+  --help  current screen
+
+Sub-commands:
+  runtimes  List runtimes
+  devices   List devices
+```
+```
+$ XcodeTool simulator list runtimes
+
+ ► List runtimes
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 13 runtimes
+   ► Runtimes
+     ⇢ iOS 8.4
+     ⇢ iOS 9.3
+     ⇢ iOS 10.3
+     ⇢ iOS 11.3
+     ⇢ iOS 11.4
+     ⇢ iOS 12.0
+     ⇢ iOS 12.1
+     ⇢ tvOS 10.2
+     ⇢ tvOS 11.4
+     ⇢ tvOS 12.1
+     ⇢ watchOS 3.2
+     ⇢ watchOS 4.2
+     ⇢ watchOS 5.1
+ ► done
+```
+```
+$ XcodeTool simulator list devices
+
+ ► List devices
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 39 devices
+   ► Devices
+     ⇢ iPhone 4s
+     ⇢ iPhone 5
+     ⇢ iPhone 5s
+     ⇢ iPhone 6
+     ⇢ iPhone 6 Plus
+     ⇢ iPhone 6s
+     ⇢ iPhone 6s Plus
+     ⇢ iPhone 7
+     ⇢ iPhone 7 Plus
+     ⇢ iPhone 8
+     ⇢ iPhone 8 Plus
+     ⇢ iPhone SE
+     ⇢ iPhone X
+     ⇢ iPhone Xs
+     ⇢ iPhone Xs Max
+     ⇢ iPhone Xʀ
+     ⇢ iPad 2
+     ⇢ iPad Retina
+     ⇢ iPad Air
+     ⇢ iPad Air 2
+     ⇢ iPad (5th generation)
+     ⇢ iPad Pro (9.7-inch)
+     ⇢ iPad Pro (12.9-inch)
+     ⇢ iPad Pro (12.9-inch) (2nd generation)
+     ⇢ iPad Pro (10.5-inch)
+     ⇢ iPad (6th generation)
+     ⇢ iPad Pro (11-inch)
+     ⇢ iPad Pro (12.9-inch) (3rd generation)
+     ⇢ Apple TV
+     ⇢ Apple TV 4K
+     ⇢ Apple TV 4K (at 1080p)
+     ⇢ Apple Watch - 38mm
+     ⇢ Apple Watch - 42mm
+     ⇢ Apple Watch Series 2 - 38mm
+     ⇢ Apple Watch Series 2 - 42mm
+     ⇢ Apple Watch Series 3 - 38mm
+     ⇢ Apple Watch Series 3 - 42mm
+     ⇢ Apple Watch Series 4 - 40mm
+     ⇢ Apple Watch Series 4 - 44mm
+ ► done
+```
+
+You can register runtimes or devices
+
+```
+$ XcodeTool simulator register 
+
+Register devices or runtimes
+
+Optional:
+  --help  current screen
+
+Sub-commands:
+  runtimes  Register runtimes
+  devices   Register devices
+```
+```
+$ XcodeTool simulator register runtimes --list="iOS 8.4,iOS 9.3,iOS 10.3"
+
+ ► Register runtimes
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 39 devices
+     ✔︎ found 13 runtimes
+   ► Add
+     ✔︎ create simulator: iOS 8.4 - iPhone 4s
+     ✔︎ create simulator: iOS 8.4 - iPhone 5
+     ✔︎ create simulator: iOS 8.4 - iPhone 5s
+     ✔︎ create simulator: iOS 8.4 - iPhone 6
+     ✔︎ create simulator: iOS 8.4 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 8.4 - iPad 2
+     ✔︎ create simulator: iOS 8.4 - iPad Retina
+     ✔︎ create simulator: iOS 8.4 - iPad Air
+     ✔︎ create simulator: iOS 8.4 - iPad Air 2
+     ✔︎ create simulator: iOS 9.3 - iPhone 4s
+     ✔︎ create simulator: iOS 9.3 - iPhone 5
+     ✔︎ create simulator: iOS 9.3 - iPhone 5s
+     ✔︎ create simulator: iOS 9.3 - iPhone 6
+     ✔︎ create simulator: iOS 9.3 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 9.3 - iPhone 6s
+     ✔︎ create simulator: iOS 9.3 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 9.3 - iPhone SE
+     ✔︎ create simulator: iOS 9.3 - iPad 2
+     ✔︎ create simulator: iOS 9.3 - iPad Retina
+     ✔︎ create simulator: iOS 9.3 - iPad Air
+     ✔︎ create simulator: iOS 9.3 - iPad Air 2
+     ✔︎ create simulator: iOS 9.3 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 10.3 - iPhone 5
+     ✔︎ create simulator: iOS 10.3 - iPhone 5s
+     ✔︎ create simulator: iOS 10.3 - iPhone 6
+     ✔︎ create simulator: iOS 10.3 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone 6s
+     ✔︎ create simulator: iOS 10.3 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone 7
+     ✔︎ create simulator: iOS 10.3 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone SE
+     ✔︎ create simulator: iOS 10.3 - iPad Air
+     ✔︎ create simulator: iOS 10.3 - iPad Air 2
+     ✔︎ create simulator: iOS 10.3 - iPad (5th generation)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (10.5-inch)
+ ► done
+```
+```
+$ XcodeTool simulator register devices --list="iPhone 4s,iPhone 5s,iPhone 6"
+
+ ► Register devices
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 39 devices
+     ✔︎ found 13 runtimes
+   ► Add
+     ✔︎ create simulator: iOS 8.4 - iPhone 4s
+     ✔︎ create simulator: iOS 8.4 - iPhone 5s
+     ✔︎ create simulator: iOS 8.4 - iPhone 6
+     ✔︎ create simulator: iOS 9.3 - iPhone 4s
+     ✔︎ create simulator: iOS 9.3 - iPhone 5s
+     ✔︎ create simulator: iOS 9.3 - iPhone 6
+     ✔︎ create simulator: iOS 10.3 - iPhone 5s
+     ✔︎ create simulator: iOS 10.3 - iPhone 6
+     ✔︎ create simulator: iOS 11.3 - iPhone 5s
+     ✔︎ create simulator: iOS 11.3 - iPhone 6
+     ✔︎ create simulator: iOS 11.4 - iPhone 5s
+     ✔︎ create simulator: iOS 11.4 - iPhone 6
+     ✔︎ create simulator: iOS 12.0 - iPhone 5s
+     ✔︎ create simulator: iOS 12.0 - iPhone 6
+     ✔︎ create simulator: iOS 12.1 - iPhone 5s
+     ✔︎ create simulator: iOS 12.1 - iPhone 6
+ ► done
+```
+
+You can unregister runtimes or devices
+
+```
+$ XcodeTool simulator unregister 
+
+Unregister devices or runtimes
+
+Optional:
+  --help  current screen
+
+Sub-commands:
+  runtimes  Unregister runtimes
+  devices   Unregister devices
+```
+```
+$ XcodeTool simulator unregister runtimes --list="iOS 8.4,iOS 9.3,iOS 10.3"
+
+ ► Unregister runtimes
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 38 devices
+   ► Unregister
+     ✔︎ iOS 8.4 - iPhone 4s
+     ✔︎ iOS 8.4 - iPhone 5
+     ✔︎ iOS 8.4 - iPhone 5s
+     ✔︎ iOS 8.4 - iPhone 6
+     ✔︎ iOS 8.4 - iPhone 6 Plus
+     ✔︎ iOS 8.4 - iPad 2
+     ✔︎ iOS 8.4 - iPad Retina
+     ✔︎ iOS 8.4 - iPad Air
+     ✔︎ iOS 8.4 - iPad Air 2
+     ✔︎ iOS 9.3 - iPhone 4s
+     ✔︎ iOS 9.3 - iPhone 5
+     ✔︎ iOS 9.3 - iPhone 5s
+     ✔︎ iOS 9.3 - iPhone 6
+     ✔︎ iOS 9.3 - iPhone 6 Plus
+     ✔︎ iOS 9.3 - iPhone 6s
+     ✔︎ iOS 9.3 - iPhone 6s Plus
+     ✔︎ iOS 9.3 - iPhone SE
+     ✔︎ iOS 9.3 - iPad 2
+     ✔︎ iOS 9.3 - iPad Retina
+     ✔︎ iOS 9.3 - iPad Air
+     ✔︎ iOS 9.3 - iPad Air 2
+     ✔︎ iOS 9.3 - iPad Pro (12.9-inch)
+     ✔︎ iOS 10.3 - iPhone 5
+     ✔︎ iOS 10.3 - iPhone 5s
+     ✔︎ iOS 10.3 - iPhone 6
+     ✔︎ iOS 10.3 - iPhone 6 Plus
+     ✔︎ iOS 10.3 - iPhone 6s
+     ✔︎ iOS 10.3 - iPhone 6s Plus
+     ✔︎ iOS 10.3 - iPhone 7
+     ✔︎ iOS 10.3 - iPhone 7 Plus
+     ✔︎ iOS 10.3 - iPhone SE
+     ✔︎ iOS 10.3 - iPad Air
+     ✔︎ iOS 10.3 - iPad Air 2
+     ✔︎ iOS 10.3 - iPad (5th generation)
+     ✔︎ iOS 10.3 - iPad Pro (9.7-inch)
+     ✔︎ iOS 10.3 - iPad Pro (12.9-inch)
+     ✔︎ iOS 10.3 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ iOS 10.3 - iPad Pro (10.5-inch)
+ ► done
+```
+```
+$ XcodeTool simulator unregister devices --list="iPhone 4s,iPhone 5s,iPhone 6"
+
+ ► Unregister devices
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 16 devices
+   ► Unregister
+     ✔︎ iOS 8.4 - iPhone 4s
+     ✔︎ iOS 8.4 - iPhone 5s
+     ✔︎ iOS 8.4 - iPhone 6
+     ✔︎ iOS 9.3 - iPhone 4s
+     ✔︎ iOS 9.3 - iPhone 5s
+     ✔︎ iOS 9.3 - iPhone 6
+     ✔︎ iOS 10.3 - iPhone 5s
+     ✔︎ iOS 10.3 - iPhone 6
+     ✔︎ iOS 11.3 - iPhone 5s
+     ✔︎ iOS 11.3 - iPhone 6
+     ✔︎ iOS 11.4 - iPhone 5s
+     ✔︎ iOS 11.4 - iPhone 6
+     ✔︎ iOS 12.0 - iPhone 5s
+     ✔︎ iOS 12.0 - iPhone 6
+     ✔︎ iOS 12.1 - iPhone 5s
+     ✔︎ iOS 12.1 - iPhone 6
+ ► done
+```
 This command will regenerate all simulators 
 
-![image](https://user-images.githubusercontent.com/1082222/32666338-662f0628-c637-11e7-97f4-9ff5d3fefd05.png)
+```
+$ XcodeTool simulator regenerate
+
+ ► Regenerate all simulators
+   ► Xcode
+     ✔︎ found Xcode 10.1
+   ► Scanning
+     ✔︎ found 39 devices
+     ✔︎ found 13 runtimes
+     ✔︎ no simulators
+   ► Create new simulators
+     ✔︎ create simulator: iOS 8.4 - iPhone 4s
+     ✔︎ create simulator: iOS 8.4 - iPhone 5
+     ✔︎ create simulator: iOS 8.4 - iPhone 5s
+     ✔︎ create simulator: iOS 8.4 - iPhone 6
+     ✔︎ create simulator: iOS 8.4 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 8.4 - iPad 2
+     ✔︎ create simulator: iOS 8.4 - iPad Retina
+     ✔︎ create simulator: iOS 8.4 - iPad Air
+     ✔︎ create simulator: iOS 8.4 - iPad Air 2
+     ✔︎ create simulator: iOS 9.3 - iPhone 4s
+     ✔︎ create simulator: iOS 9.3 - iPhone 5
+     ✔︎ create simulator: iOS 9.3 - iPhone 5s
+     ✔︎ create simulator: iOS 9.3 - iPhone 6
+     ✔︎ create simulator: iOS 9.3 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 9.3 - iPhone 6s
+     ✔︎ create simulator: iOS 9.3 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 9.3 - iPhone SE
+     ✔︎ create simulator: iOS 9.3 - iPad 2
+     ✔︎ create simulator: iOS 9.3 - iPad Retina
+     ✔︎ create simulator: iOS 9.3 - iPad Air
+     ✔︎ create simulator: iOS 9.3 - iPad Air 2
+     ✔︎ create simulator: iOS 9.3 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 10.3 - iPhone 5
+     ✔︎ create simulator: iOS 10.3 - iPhone 5s
+     ✔︎ create simulator: iOS 10.3 - iPhone 6
+     ✔︎ create simulator: iOS 10.3 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone 6s
+     ✔︎ create simulator: iOS 10.3 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone 7
+     ✔︎ create simulator: iOS 10.3 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 10.3 - iPhone SE
+     ✔︎ create simulator: iOS 10.3 - iPad Air
+     ✔︎ create simulator: iOS 10.3 - iPad Air 2
+     ✔︎ create simulator: iOS 10.3 - iPad (5th generation)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 10.3 - iPad Pro (10.5-inch)
+     ✔︎ create simulator: iOS 11.3 - iPhone 5s
+     ✔︎ create simulator: iOS 11.3 - iPhone 6
+     ✔︎ create simulator: iOS 11.3 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 11.3 - iPhone 6s
+     ✔︎ create simulator: iOS 11.3 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 11.3 - iPhone 7
+     ✔︎ create simulator: iOS 11.3 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 11.3 - iPhone 8
+     ✔︎ create simulator: iOS 11.3 - iPhone 8 Plus
+     ✔︎ create simulator: iOS 11.3 - iPhone SE
+     ✔︎ create simulator: iOS 11.3 - iPhone X
+     ✔︎ create simulator: iOS 11.3 - iPad Air
+     ✔︎ create simulator: iOS 11.3 - iPad Air 2
+     ✔︎ create simulator: iOS 11.3 - iPad (5th generation)
+     ✔︎ create simulator: iOS 11.3 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 11.3 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 11.3 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 11.3 - iPad Pro (10.5-inch)
+     ✔︎ create simulator: iOS 11.3 - iPad (6th generation)
+     ✔︎ create simulator: iOS 11.4 - iPhone 5s
+     ✔︎ create simulator: iOS 11.4 - iPhone 6
+     ✔︎ create simulator: iOS 11.4 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 11.4 - iPhone 6s
+     ✔︎ create simulator: iOS 11.4 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 11.4 - iPhone 7
+     ✔︎ create simulator: iOS 11.4 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 11.4 - iPhone 8
+     ✔︎ create simulator: iOS 11.4 - iPhone 8 Plus
+     ✔︎ create simulator: iOS 11.4 - iPhone SE
+     ✔︎ create simulator: iOS 11.4 - iPhone X
+     ✔︎ create simulator: iOS 11.4 - iPad Air
+     ✔︎ create simulator: iOS 11.4 - iPad Air 2
+     ✔︎ create simulator: iOS 11.4 - iPad (5th generation)
+     ✔︎ create simulator: iOS 11.4 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 11.4 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 11.4 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 11.4 - iPad Pro (10.5-inch)
+     ✔︎ create simulator: iOS 11.4 - iPad (6th generation)
+     ✔︎ create simulator: iOS 12.0 - iPhone 5s
+     ✔︎ create simulator: iOS 12.0 - iPhone 6
+     ✔︎ create simulator: iOS 12.0 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 12.0 - iPhone 6s
+     ✔︎ create simulator: iOS 12.0 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 12.0 - iPhone 7
+     ✔︎ create simulator: iOS 12.0 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 12.0 - iPhone 8
+     ✔︎ create simulator: iOS 12.0 - iPhone 8 Plus
+     ✔︎ create simulator: iOS 12.0 - iPhone SE
+     ✔︎ create simulator: iOS 12.0 - iPhone X
+     ✔︎ create simulator: iOS 12.0 - iPhone Xs
+     ✔︎ create simulator: iOS 12.0 - iPhone Xs Max
+     ✔︎ create simulator: iOS 12.0 - iPhone Xʀ
+     ✔︎ create simulator: iOS 12.0 - iPad Air
+     ✔︎ create simulator: iOS 12.0 - iPad Air 2
+     ✔︎ create simulator: iOS 12.0 - iPad (5th generation)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (10.5-inch)
+     ✔︎ create simulator: iOS 12.0 - iPad (6th generation)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (11-inch)
+     ✔︎ create simulator: iOS 12.0 - iPad Pro (12.9-inch) (3rd generation)
+     ✔︎ create simulator: iOS 12.1 - iPhone 5s
+     ✔︎ create simulator: iOS 12.1 - iPhone 6
+     ✔︎ create simulator: iOS 12.1 - iPhone 6 Plus
+     ✔︎ create simulator: iOS 12.1 - iPhone 6s
+     ✔︎ create simulator: iOS 12.1 - iPhone 6s Plus
+     ✔︎ create simulator: iOS 12.1 - iPhone 7
+     ✔︎ create simulator: iOS 12.1 - iPhone 7 Plus
+     ✔︎ create simulator: iOS 12.1 - iPhone 8
+     ✔︎ create simulator: iOS 12.1 - iPhone 8 Plus
+     ✔︎ create simulator: iOS 12.1 - iPhone SE
+     ✔︎ create simulator: iOS 12.1 - iPhone X
+     ✔︎ create simulator: iOS 12.1 - iPhone Xs
+     ✔︎ create simulator: iOS 12.1 - iPhone Xs Max
+     ✔︎ create simulator: iOS 12.1 - iPhone Xʀ
+     ✔︎ create simulator: iOS 12.1 - iPad Air
+     ✔︎ create simulator: iOS 12.1 - iPad Air 2
+     ✔︎ create simulator: iOS 12.1 - iPad (5th generation)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (9.7-inch)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (12.9-inch)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (12.9-inch) (2nd generation)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (10.5-inch)
+     ✔︎ create simulator: iOS 12.1 - iPad (6th generation)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (11-inch)
+     ✔︎ create simulator: iOS 12.1 - iPad Pro (12.9-inch) (3rd generation)
+     ✔︎ create simulator: tvOS 10.2 - Apple TV
+     ✔︎ create simulator: tvOS 11.4 - Apple TV
+     ✔︎ create simulator: tvOS 11.4 - Apple TV 4K
+     ✔︎ create simulator: tvOS 11.4 - Apple TV 4K (at 1080p)
+     ✔︎ create simulator: tvOS 12.1 - Apple TV
+     ✔︎ create simulator: tvOS 12.1 - Apple TV 4K
+     ✔︎ create simulator: tvOS 12.1 - Apple TV 4K (at 1080p)
+     ✔︎ create simulator: watchOS 3.2 - Apple Watch - 38mm
+     ✔︎ create simulator: watchOS 3.2 - Apple Watch - 42mm
+     ✔︎ create simulator: watchOS 3.2 - Apple Watch Series 2 - 38mm
+     ✔︎ create simulator: watchOS 3.2 - Apple Watch Series 2 - 42mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch - 38mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch - 42mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 2 - 38mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 2 - 42mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 3 - 38mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 3 - 42mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 4 - 40mm
+     ✔︎ create simulator: watchOS 4.2 - Apple Watch Series 4 - 44mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 2 - 38mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 2 - 42mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 3 - 38mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 3 - 42mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 4 - 40mm
+     ✔︎ create simulator: watchOS 5.1 - Apple Watch Series 4 - 44mm
+ ► done
+```
 
 For example on iOS project you will see
 
-![image](https://user-images.githubusercontent.com/1082222/32665911-140eabf6-c636-11e7-9ddd-2c9b589c916e.png)
-
+![image](https://user-images.githubusercontent.com/1082222/49857664-6f3dc700-fdf3-11e8-9ad5-53a6ddddeeeb.png)

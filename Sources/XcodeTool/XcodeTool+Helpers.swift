@@ -390,16 +390,13 @@ public extension XcodeTool {
     return true
   }
   
-  public class func patch(path pPath:String, original pOriginal:String, new pNew:String, protect pProtect:[String]? = nil, ignore pIgnore:[String] = []) -> Bool {
+  public class func patch(path pPath:String, original pOriginal:String, new pNew:String, protect pProtect:[String]? = nil, ignore pIgnore:[String] = [], list pList:[String] = [], remove pRemove:[String] = []) -> Bool {
     let lPath = pPath.hasSuffix("/") == false ? "\(pPath)/" : pPath
-    let lExt = ["swift","h", "m", "storyboard", "xib", "md", "plist", "pbxproj", "xcworkspacedata", "xcscheme"]
-    let lRemove = ["xcuserdata", "podspec"]
-    
-    let lRet = patch(glob: [lPath], original: pOriginal, new: pNew, ext: lExt, remove: lRemove, ignore: pIgnore, protect: pProtect)
+    let lRet = patch(glob: [lPath], original: pOriginal, new: pNew, protect: pProtect, ignore: pIgnore, list: pList, remove: pRemove)
     return lRet
   }
   
-  public class func patch(glob pGlob:[String], original pOriginal:String, new pNew:String, ext pExt:[String]=[], remove pRemove:[String]=[], ignore pIgnore:[String] = [], protect pProtect:[String]? = nil) -> Bool {
+  public class func patch(glob pGlob:[String], original pOriginal:String, new pNew:String, protect pProtect:[String]? = nil, ignore pIgnore:[String] = [], list pList:[String] = [], remove pRemove:[String] = []) -> Bool {
     var lRet = true
     
     let lRenamePath:(String) -> String? = {
@@ -412,7 +409,10 @@ public extension XcodeTool {
         lRet = dir(path: pPath) + lName.replace(string: pOriginal, sub: pNew)
         
         if mv(at: pPath, to: lRet!) == false {
+          display(type: .no, verbose: true, format: "renamed %@ %@ %@",pPath.fg.c256(104),"to".cli.text,lRet!.fg.c256(104))
           lRet = nil
+        } else {
+          display(type: .yes, verbose: true, format: "renamed %@ %@ %@",pPath.fg.c256(104),"to".cli.text,lRet!.fg.c256(104))
         }
       }
       
@@ -422,20 +422,26 @@ public extension XcodeTool {
     for lItem in pGlob where lRet == true {
       if let lCurrent = lRenamePath(lItem) {
         if isDir(lCurrent) == true {
-          let lGlob = glob(path: lCurrent).filter({ pIgnore.contains(fullname(path: $0)) == false })
-          lRet = patch(glob: lGlob, original: pOriginal, new: pNew, ext: pExt, remove: pRemove, ignore:pIgnore, protect: pProtect)
-        } else if pRemove.contains(ext(path: lCurrent)) {
+          let lGlob = glob(path: lCurrent).filter({ pIgnore.contains(ext(path: $0)) == false && pIgnore.contains(fullname(path: $0)) == false })
+          lRet = patch(glob: lGlob, original: pOriginal, new: pNew, protect: pProtect, ignore: pIgnore, list: pList, remove: pRemove)
+        } else if pRemove.contains(ext(path: lCurrent)) || pRemove.contains(fullname(path: lCurrent)) {
           if isDir(lCurrent) == true {
             if rmdir(path: lCurrent) == false {
-              display(type: .no, format: "unable to purge user data")
+              display(type: .no, format: "removed %@",lCurrent.fg.c256(104))
               lRet = false
+            } else {
+              display(type: .yes, verbose: true, format: "removed %@",lCurrent.fg.c256(104))
             }
-          } else if rm(path: lCurrent) == false {
-            display(type: .no, format: "unable to remove '\(lCurrent)'")
-            lRet = false
+          } else {
+              if rm(path: lCurrent) == false {
+                display(type: .no, format: "removed %@",lCurrent.fg.c256(104))
+                lRet = false
+              } else {
+                display(type: .yes, verbose: true, format: "removed %@",lCurrent.fg.c256(104))
+              }
           }
         } else if isFile(lCurrent) {
-          let lContinue = pExt.count > 0 ? pExt.contains(ext(path: lCurrent)) : true
+          let lContinue = pList.count > 0 ? pList.contains(ext(path: lCurrent)) || pList.contains(fullname(path: lCurrent)) : true
           
           if let lContent = readText(file: lCurrent), lContinue == true {
             var lProtects:[String:String] = [:]
@@ -449,6 +455,10 @@ public extension XcodeTool {
                 lContentPatch = lContentPatch.replace(string: lValue, sub: lUuid)
               }
             }
+
+            var lCount = lContentPatch.components(separatedBy: pOriginal).count
+            
+            if lCount > 0 { lCount -= 1 }
             
             lContentPatch = lContentPatch.replace(string: pOriginal, sub: pNew)
             
@@ -460,14 +470,16 @@ public extension XcodeTool {
             
             if lContentPatch != lContent {
               if writeText(file: lCurrent, string: lContentPatch) == false {
-                display(type: .no, format: "unable to patch '\(lItem)'")
+                display(type: .no, format: "patched %@ %@", lCurrent.fg.c256(104),"[\(lCount)]".fg.c256(74))
                 lRet = false
+              } else {
+                display(type: .yes, verbose: true, format: "patched %@ %@", lCurrent.fg.c256(104),"[\(lCount)]".fg.c256(74))
               }
             }
           }
         }
       } else {
-        display(type: .no, format: "unable to handle '\(lItem)'")
+        display(type: .no, format: "unable to handle %@",lItem.fg.c256(104))
         lRet = false
       }
     }

@@ -15,7 +15,6 @@
 ## Table of contents
 
 * [What is XcodeTool?](#what-is-xcodetool)
-* [Environment](#environment)
 * [Installation](#installation)
   * [Manually](#manually)
 * [Command project](#command-project)
@@ -51,7 +50,12 @@ $ cp -v ./.build/x86_64-apple-macosx10.10/release/XcodeTool  /usr/local/bin/Xcod
 
 When you launch XcodeTool on the terminal you should see this screen
 
-![image](https://user-images.githubusercontent.com/1082222/49682853-8d39bd80-fabb-11e8-92c1-627adabdcf22.png)
+![image](https://user-images.githubusercontent.com/1082222/50453972-d3f53780-0944-11e9-9a34-5ce350bcfa33.png)
+
+# Command self
+
+![image](https://user-images.githubusercontent.com/1082222/50454012-0868f380-0945-11e9-96d1-21ed9c3c02c4.png)
+
 
 # Command project
 
@@ -62,10 +66,11 @@ With this command you can rename a class or a project. Change the git url or ren
 
 # Command template
 
-![image](https://user-images.githubusercontent.com/1082222/49854767-8ed0f180-fdeb-11e8-9643-80e21f4319a1.png)
+![image](https://user-images.githubusercontent.com/1082222/50453761-36e5cf00-0943-11e9-9ab1-c2e48beab828.png)
 
 `template` is a command to create projets base on template projects. 
 You can use predefined templates provide with XcodeTool. You can also create you own sources and your own templates.
+
 
 ## Predefined templates
 
@@ -75,7 +80,7 @@ This template is base on tutorial: [Swift Cross Platform Framework](https://gith
 
 1. Create your component with the template `ComponentCrossPlatform`
 
-![test](https://user-images.githubusercontent.com/1082222/32666874-32bf647a-c639-11e7-8ec1-1c31cec19d18.jpg)
+![image](https://user-images.githubusercontent.com/1082222/50454145-e1f78800-0945-11e9-839b-d1b83f38efcc.png)
 
 XcodeTool will generate this project for you:
 
@@ -89,7 +94,7 @@ XcodeTool will generate this project for you:
 
 1. To generate your first command line tool project:
 
-![test1](https://user-images.githubusercontent.com/1082222/32666965-8db685fc-c639-11e7-881a-ff32eeb9bee9.jpg)
+![image](https://user-images.githubusercontent.com/1082222/50454207-40246b00-0946-11e9-95ae-301a08a2f83d.png)
 
 XcodeTool will generate this project for you:
 
@@ -97,7 +102,7 @@ XcodeTool will generate this project for you:
 
 2. Open your first command line tool with Xcode
 
-![image](https://user-images.githubusercontent.com/1082222/27725251-be0f3ac8-5d75-11e7-8923-adeec5b8cade.png) 
+![image](https://user-images.githubusercontent.com/1082222/50454266-ac9f6a00-0946-11e9-90b1-979ff2dcc861.png)
 
 
 ## Custom source
@@ -123,16 +128,25 @@ $ XcodeTool template source gen --name=NewSource --url=https://github.com/JohnDo
 5. Create a json for you new crazy template
 
 ```
-$ XcodeTool template gen --name=NewTemplate --url=https://github.com/JohnDoe/NewTemplate.xtemplate.git --description="My new crazy template" --original=NewTemplate --version=1.0.0 --author-"John Doe"
+$ XcodeTool template gen --name=NewTemplate --url=https://github.com/JohnDoe/NewTemplate.xtemplate.git --description="My new crazy template" --original=NewTemplate --tag=1.0.0 --author-"John Doe"
 
  ► Template generate json
    ✔︎ json file for the new template saved at '/Users/johnDoe/projects/github/NewSourceTemplates/NewTemplate.json'
  ► done
 ```
 
-6. Commit your `NewTemplate.json` on https://github.com/JohnDoe/NewSourceTemplates
+6. Generate the json patch file
+```
+$ XcodeTool template gen patch --file=XcodeTool.json --generate
+```
 
-7. Declare your source for XcodeTool
+7. Customize your `XcodeTool.json` by adding or removing aliases and adding items
+
+8. Commit `XcodeTool.json` on https://github.com/JohnDoe/NewTemplate.xtemplate.git
+
+9. Commit your `NewTemplate.json` on https://github.com/JohnDoe/NewSourceTemplates
+
+10. Declare your source for XcodeTool
 
 ```
 $ XcodeTool template source add https://raw.githubusercontent.com/JohnDoe/MySources/master/NewSource.json

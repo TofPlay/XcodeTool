@@ -68,25 +68,28 @@ public extension XcodeTool {
         
         display(type: .yes, verbose: true, format: "repository for templates found")
         
-        let lFile = pVars["file"] ?? workdir() + lName + ".json"
+        let lFile = pVars["file"].unwrappedOr(default: workdir() + lName + ".json")
         let lSource = XcodeTool.Source()
         
         lSource.uuid = UUID().uuidString
         lSource.name = lName
         lSource.templates = lTemplates
-        lSource.source = pVars["url"] ?? ""
-        lSource.version = pVars["version"] ?? ""
-        lSource.description = pVars["description"] ?? ""
-        lSource.author = pVars["author"] ?? ""
+        lSource.source = pVars["url"].unwrappedOr(default: "")
+        lSource.description = pVars["description"].unwrappedOr(default: "")
+        lSource.author = pVars["author"].unwrappedOr(default: "")
         
-        if let lJson = try? JSONEncoder().encode(lSource) {
-          if writeData(file: lFile, data: lJson) == false {
-            display(type: .no, format: "unable to save the json file")
-          } else {
-            display(type: .yes, format: "json file for the new source saved at '\(lFile)'")
-          }
+        if let lBranch = pVars["branch"] {
+          lSource.branch = lBranch
         } else {
-          display(type: .no, format: "unable to generate the new source")
+          if let lTag = pVars["tag"] {
+            lSource.tag = lTag
+          }
+        }
+
+        if writeJson(file: lFile, object: lSource) == false {
+          display(type: .no, format: "unable to save the json file")
+        } else {
+          display(type: .yes, format: "json file for the new source saved at '\(lFile)'")
         }
       }
       
@@ -107,7 +110,7 @@ public extension XcodeTool {
         display(type: .yes, verbose: true, format: "url found")
         
         if let lSource = source(url: lUrl, save: true) {
-          display(type: .yes, format: "source \"\(lSource.name ?? "")\" added")
+          display(type: .yes, format: "source \"\(lSource.name.unwrappedOr(default: ""))\" added")
         } else {
           display(type: .no, format: "unable to add source with url \"\(lUrl)\"")
         }
@@ -198,7 +201,7 @@ public extension XcodeTool {
         
         if let _ = source(name: lName) {
           let lAction = lAdd ? "added" : "removed"
-          var lLines = readLines(file: pathSources + ".default") ?? []
+          var lLines = readLines(file: pathSources + ".default").unwrappedOr(default: [])
           var lContinue = true
           
           if lAdd {
@@ -312,7 +315,7 @@ public extension XcodeTool {
     
     // MARK: -> Public class methods
     
-    public class func root(_ pVars:[String:String]) {
+    public class func apply(_ pVars:[String:String]) {
       Display.verbose = pVars.keys.contains("verbose")
       
       display(type: .action, format: "Template")
@@ -321,6 +324,7 @@ public extension XcodeTool {
         display(type: .done)
       }
       
+      
       guard let lName = pVars["name"], lName.isEmpty == false  else {
         display(type: .no, format: "option --name must be specified")
         return
@@ -328,8 +332,42 @@ public extension XcodeTool {
       
       display(type: .yes, verbose: true, format: "template name: '\(lName)'")
       
-      guard var lTarget = pVars["target"], lTarget.isEmpty == false else {
-        display(type: .no, format: "option --target is missing")
+      var lData:Data? = nil
+
+      if let lFileAlias = pVars["alias"], lFileAlias.lastWord(".") == "json" {
+        lData = readData(file: lFileAlias)
+        
+        guard lData != nil else {
+          display(type: .no, format: "option --alias invalid json file")
+          return
+        }
+      } else {
+        if pVars["alias"] == nil {
+          if let lCmdTarget = pVars["target"] {
+            lData = "{\"TARGET\":\"\(lCmdTarget)\"}".data(using: .utf8)
+          }
+
+          guard lData != nil else {
+            display(type: .no, format: "option --target or --alias must be specify")
+            return
+          }
+        } else {
+          lData = pVars["alias"]?.data(using: .utf8)
+
+          guard lData != nil else {
+            display(type: .no, format: "option --alias invalid json string")
+            return
+          }
+        }
+      }
+
+      guard let lAlias = json2obj(lData) as? [String:String] else {
+        display(type: .no, format: "option --alias is invalid")
+        return
+      }
+
+      guard var lTarget = lAlias["TARGET"], lTarget.isEmpty == false else {
+        display(type: .no, format: "alias \"TARGET\" is missing or empty")
         return
       }
       
@@ -337,34 +375,20 @@ public extension XcodeTool {
         lTarget = workdir() + lTarget
       }
       
-      display(type: .yes, verbose: true, format: "target '\(lTarget)'")
+      display(type: .yes, verbose: true, format: "new project name is: '\(lTarget)'")
       
-      let lNew = name(path: lTarget)
-      
-      guard lNew.isEmpty == false else {
-        display(type: .no, format: "new project name not found")
-        return
-      }
-      
-      display(type: .yes, verbose: true, format: "new project name is: '\(lNew)'")
-      
-      let lXcode = pVars.keys.contains("xcode")
-      let lSource = pVars["source"] ?? ""
+      let lXcode = pVars.keys.contains("xcode") || lAlias["XCODE"] == "true"
+      let lSource = pVars["source"].unwrappedOr(default: lAlias["SOURCE"].unwrappedOr(default: ""))
       let lSources = lSource.isEmpty ? defaulfSources : [lSource]
       let lTemplates = templates(sources: lSources)
-      let lList = (pVars["list"] ?? "Podfile,swift,h,m,storyboard,xib,md,plist,json,strings,png,pbxproj,xcworkspacedata,xcscheme,appiconset").components(separatedBy: ",")
-      let lRemove = (pVars["remove"] ?? "xcuserdata,podspec").components(separatedBy: ",")
-      let lIgnore = (pVars["ignore"] ?? "Pods,Carthage").components(separatedBy: ",")
-      let lCreatedBy = pVars["createdBy"]
-      let lCreatedAt = pVars["createdAt"]
-      let lCopyRightYear = pVars["copyRightYear"]
-      let lCopyRightName = pVars["copyRightName"]
+      let lCreatedBy = pVars["createdBy"] ?? lAlias["CREATEDBY"]
+      let lCreatedAt = pVars["createdAt"] ?? lAlias["CREATEDAT"]
+      let lCopyRightYear = pVars["copyRightYear"] ?? lAlias["COPYRIGHTYEAR"]
+      let lCopyRightName = pVars["copyRightName"] ?? lAlias["COPYRIGHTNAME"]
       
       display(type: .compute, format: "checking if template '\(lName)' exist...")
       
       if let lTemplate = lTemplates.filter({ $0.name == lName }).first {
-        let lProtect = pVars["protect"]?.components(separatedBy: ",") ?? lTemplate.protect
-
         display(type: .yes, format: "template '\(lName)' exist")
         
         guard let lPath = lTemplate.url, lPath.isEmpty == false else {
@@ -378,13 +402,6 @@ public extension XcodeTool {
         }
         
         display(type: .yes, verbose: true, format: "url of the template: `\(lPath)`")
-        
-        guard let lOriginal = lTemplate.original, lOriginal.isEmpty == false else {
-          display(type: .no, format: "original project name is missing")
-          return
-        }
-        
-        display(type: .yes, verbose: true, format: "original project name: '\(lOriginal)'")
         
         let lBranch = pVars["branch"] ?? lTemplate.branch
         let lTag = pVars["tag"] ?? lTemplate.tag
@@ -423,27 +440,66 @@ public extension XcodeTool {
         }
         
         if copy(path: lPath, branch: lBranch, tag: lTag, target: lTarget, subfolder: lSubfolder) == true {
+          var lPatch = Patch()
+
+          if let lFile = lTemplate.patch {
+            if chdir(path: lTarget) {
+              if let lObj = readJson(codable: Patch.self, file: lFile) {
+                lPatch = lObj
+
+                lPatch.list.set(ifNil: Patch.Constant.list)
+                lPatch.remove.set(ifNil: Patch.Constant.remove)
+                lPatch.ignore.set(ifNil: Patch.Constant.ignore)
+                lPatch.protect.set(ifNil: Patch.Constant.protect)
+
+                guard let lPatchAlias = lPatch.alias else {
+                  display(type: .yes, format: "missing alias key in %@", lFile.fg.c256(104))
+                  return
+                }
+                
+                let lMissingKeys = Set(lPatchAlias.keys).subtracting(Set(lAlias.keys))
+                
+                guard lMissingKeys.count == 0 else {
+                  display(type: .yes, format: "missing alias [%@] %@ %@", lMissingKeys.joined(separator: ",").fg.c256(72),"key in".cli.text,lFile.fg.c256(104))
+                  return
+                }
+                
+                lPatch.alias = lAlias
+                lPatch.ignore.remove(lFile)
+                lPatch.remove.append(lFile)
+                display(type: .yes, format: "use patch file %@", lFile.fg.c256(104))
+              } else {
+                display(type: .no, format: "json patch file %@ %@", lFile.fg.c256(104),"is missing".cli.text)
+                return
+              }
+            }
+          } else {
+            guard let lOriginal = lTemplate.original, lOriginal.isEmpty == false else {
+              display(type: .no, format: "original project name is missing")
+              return
+            }
+            
+            display(type: .yes, verbose: true, format: "original project name: '\(lOriginal)'")
+            
+            lPatch.list = pVars["list"].unwrapped({$0.components(separatedBy: ",")}, default: Patch.Constant.list)
+            lPatch.remove = pVars["remove"].unwrapped({$0.components(separatedBy: ",")}, default: Patch.Constant.remove)
+            lPatch.ignore = pVars["ignore"].unwrapped({$0.components(separatedBy: ",")}, default: Patch.Constant.ignore)
+            lPatch.protect = pVars["protect"].unwrapped({$0.components(separatedBy: ",")}, default: Patch.Constant.protect)
+            
+            lPatch.add(original: lOriginal, new: lTarget)
+          }
+          
           display(type: .yes, format: "template '\(lName)' duplicated")
           
           display(type: .compute, format: "patching template '\(lName)'...")
-          
-          if patch(path: lTarget, original: lOriginal, new: lNew, protect: lProtect, ignore: lIgnore, list: lList, remove: lRemove) == true {
-            display(type: .yes, format: "template '\(lName)' patched")
-          } else {
-            display(type: .no, format: "patch aborted")
-            return
-          }
+          display(type: lPatch.apply(path: lTarget) ? .yes : .no, format: "template '\(lName)' patched")
         } else {
           display(type: .no, format: "template aborted")
           return
         }
         
         if lCreatedBy != nil || lCreatedAt != nil || lCopyRightYear != nil || lCopyRightName != nil {
-          if header(path: lTarget, createdBy: lCreatedBy, createdAt: lCreatedAt, copyRightYear: lCopyRightYear, copyRightName: lCopyRightName)  {
-            display(type: .yes, format: "header processed")
-          } else {
-            display(type: .no, format: "header processing failed")
-          }
+          display(type:header(path: lTarget, createdBy: lCreatedBy, createdAt: lCreatedAt, copyRightYear: lCopyRightYear, copyRightName: lCopyRightName) ? .yes : .no, format: "header processed")
         }
         
         if lXcode {
@@ -454,12 +510,7 @@ public extension XcodeTool {
                   let lShell = Shell()
                   
                   display(type: .compute, format: "Xcode project generating...")
-                  
-                  if lShell.run("swift package generate-xcodeproj").wait() == 0 {
-                    display(type: .yes, format: "Xcode project generated")
-                  } else {
-                    display(type: .no, format: "Xcode project aborted")
-                  }
+                  display(type: lShell.run("swift package generate-xcodeproj").wait() == 0 ? .yes : .no, format: "Xcode project generated")
                 } else {
                   display(type: .no, format: "\"Package.swift\" not found")
                 }
@@ -470,7 +521,7 @@ public extension XcodeTool {
               display(type: .warning, format: "Xcode project already exist")
             }
           } else {
-            display(type: .no, format: "target folder \"\(lTarget)\" not found or invalid")
+            display(type: .no, format: "target folder \"\(lAlias)\" not found or invalid")
           }
         }
       } else {
@@ -501,30 +552,56 @@ public extension XcodeTool {
       
       display(type: .yes, verbose: true, format: "template's url found")
       
-      let lFile = pVars["file"] ?? workdir() + lName + ".json"
+      let lFile = pVars["file"].unwrappedOr(default: workdir() + lName + ".json")
       let lTemplate = Template()
       
       lTemplate.name = lName
       lTemplate.url = lUrl
-      lTemplate.description = pVars["description"] ?? ""
-      lTemplate.original = pVars["original"] ?? ""
-      lTemplate.branch = pVars["branch"] ?? ""
-      lTemplate.tag = pVars["tag"] ?? ""
-      lTemplate.protect = pVars["protect"]?.components(separatedBy: ",") ?? []
-      lTemplate.version = pVars["version"] ?? ""
-      lTemplate.author = pVars["author"] ?? ""
-      
-      if let lJson = try? JSONEncoder().encode(lTemplate) {
-        if writeData(file: lFile, data: lJson) == false {
-          display(type: .no, format: "unable to save the json file")
-        } else {
-          display(type: .yes, format: "json file for the new template saved at '\(lFile)'")
-        }
-      } else {
-        display(type: .no, format: "unable to generate json file for the new template")
-      }
+      lTemplate.description = pVars["description"].unwrappedOr(default: "")
+      lTemplate.branch = pVars["branch"].unwrappedOr(default: "")
+      lTemplate.tag = pVars["tag"].unwrappedOr(default: "")
+      lTemplate.patch = pVars["patch"].unwrappedOr(default: "XcodeTool.json")
+      lTemplate.author = pVars["author"].unwrappedOr(default: "")
+
+      display(type: writeJson(file: lFile, object: lTemplate) ? .yes : .no, format: "generate new template %@", lFile.fg.c256(104))
     }
-    
+
+    public class func patch(_ pVars:[String:String]) {
+      Display.verbose = pVars.keys.contains("verbose")
+      
+      display(type: .action, format: "Generate json patch file for a template project")
+      
+      defer {
+        display(type: .done)
+      }
+
+      guard let lFile = pVars["file"], lFile.isEmpty == false else {
+        display(type: .no, format: "json file name is required")
+        return
+      }
+      
+      let lPatch = Patch()
+      
+      lPatch.list = Patch.Constant.list
+      lPatch.remove = Patch.Constant.remove
+      lPatch.ignore = Patch.Constant.ignore
+      lPatch.protect = Patch.Constant.protect
+      lPatch.alias = ["TARGET":"Template",
+                      "XCODE":"false",
+                      "SOURCE":"",
+                      "CREATEDBY":"John Doe",
+                      "CREATEDAT":"DD/MM/YYYY",
+                      "COPYRIGHTYEAR":"YYYY",
+                      "COPYRIGHTNAME":"Company"]
+      lPatch.items = [
+        Patch.Item(original: "Template", new: "$(TARGET)"),
+        Patch.Item(enable: false, files: [Patch.Item.File(name: "SpecificFile1.swift")], original: "Template", new: "$(TARGET)"),
+        Patch.Item(enable: false, files: [Patch.Item.File(name: "SpecificFile2.swift", continue: false, lines:[5,10,15,20])], original: "original", new: "$(NEW)")
+      ]
+      
+      display(type:writeJson(file: lFile, object: lPatch) ? .yes : .no, format: "generate json %@", lFile.fg.c256(104))
+    }
+
     public class func ls(_ pVars:[String:String]) {
       let lSource = pVars["source"] ?? ""
       let lSources = lSource.isEmpty ? defaulfSources : [lSource]

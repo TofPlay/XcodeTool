@@ -4,7 +4,7 @@
 //
 //  Created by Christophe Braud on 04/02/2018.
 //  Base on Tof Templates (https://bit.ly/2OWAgmb)
-//  
+//
 //
 
 import Foundation
@@ -22,48 +22,52 @@ public extension XcodeTool {
   // MARK: -> Public structs
   
   // MARK: -> Public class
+  public class Source : Codable {
+    public var uuid:String!
+    public var name:String!
+    public var source:String!
+    public var templates:String!
+    public var description:String!
+    public var branch:String? = nil
+    public var tag:String? = nil
+    public var author:String? = nil
+  }
   
-    public class Source : Codable {
-        public var uuid:String!
-        public var name:String!
-        public var source:String!
-        public var templates:String!
-        public var description:String!
-        public var version:String? = nil
-        public var author:String? = nil
-    }
-    
-    public class Template : Codable {
-        public var name:String!
-        public var url:String!
-        public var description:String!
-        public var branch:String? = nil
-        public var tag:String? = nil
-        public var subfolder:String? = nil
-        public var original:String? = nil
-        public var protect:[String]? = nil
-        public var author:String? = nil
-        public var version:String? = nil
-    }
-    
-  // MARK: -> Public type alias 
+  public class Template : Codable {
+    public var name:String!
+    public var url:String!
+    public var description:String!
+    public var branch:String? = nil
+    public var tag:String? = nil
+    public var subfolder:String? = nil
+    public var author:String? = nil
+
+    // since version 1.0.4
+    public var patch:String? = nil
+
+    // previous version 1.0.4
+    public var original:String? = nil
+    public var protect:[String]? = nil
+  }
+  
+  // MARK: -> Public type alias
   
   // MARK: -> Public static properties
   
-    public static var pathRoot:String {
-        return  applicationSupportDirectory + "XcodeTool/"
-    }
-    
-    public static var pathSources:String {
-        return  pathRoot + "Sources/"
-    }
-    
-    public static var pathTemplates:String {
-        return pathRoot + "Templates/"
-    }
-    
-    public static var defaulfSources:[String] = ["XcodeTool"]
-    
+  public static var pathRoot:String {
+    return  applicationSupportDirectory + "XcodeTool/"
+  }
+  
+  public static var pathSources:String {
+    return  pathRoot + "Sources/"
+  }
+  
+  public static var pathTemplates:String {
+    return pathRoot + "Templates/"
+  }
+  
+  public static var defaulfSources:[String] = ["XcodeTool"]
+  
   // MARK: -> Public properties
   
   // MARK: -> Public class methods
@@ -71,16 +75,7 @@ public extension XcodeTool {
   // MARK: --> Sources methods
   
   public class func source(file pFile:String) -> Source? {
-    var lRet:Source? = nil
-    
-    if let lData = readData(file: pFile) {
-      do {
-        lRet = try JSONDecoder().decode(Source.self, from: lData)
-      } catch let lError {
-        self.error = lError
-      }
-    }
-    
+    let lRet:Source? = readJson(codable: Source.self, file: pFile)
     return lRet
   }
   
@@ -92,29 +87,31 @@ public extension XcodeTool {
       lUrl = "file://" + pUrl
     }
     
-    if let lData = readData(url: lUrl) {
-      do {
-        lRet = try JSONDecoder().decode(Source.self, from: lData)
-        if pSave == true, let lName = lRet?.name, let lUuid = lRet?.uuid, let lUrl = lRet?.templates {
-          let lPathSource = pathSources + "\(lName).json"
-          let lPathTemplates = pathTemplates + "\(lUuid)/"
-          
-          if writeData(file: lPathSource, data: lData) == false {
-            lRet = nil
+    if let lSource = readJson(codable: Source.self, url: lUrl) {
+      lRet = lSource
+      if pSave == true, let lName = lRet?.name, let lUuid = lRet?.uuid, let lUrl = lRet?.templates {
+        let lPathSource = pathSources + "\(lName).json"
+        let lPathTemplates = pathTemplates + "\(lUuid)/"
+        
+        if writeJson(file: lPathSource, object: lSource) == false {
+          lRet = nil
+        } else {
+          if isDir(lPathTemplates) {
+            if Git.pull(path: lPathTemplates) != 0 {
+              lRet = nil
+            }
           } else {
-            if isDir(lPathTemplates) {
-              if gitPull(path: lPathTemplates) != 0 {
-                lRet = nil
-              }
-            } else {
-              if gitClone(url: lUrl, target: lPathTemplates, display: false) != 0 {
-                lRet = nil
-              }
+            if Git.clone(url: lUrl, target: lPathTemplates, display: false) != 0 {
+              lRet = nil
+            }
+          }
+
+          if lRet != nil && (lSource.branch != nil || lSource.tag != nil) {
+            if Git.checkout(path: lPathTemplates, branch: lSource.branch, tag: lSource.tag) == false {
+              lRet = nil
             }
           }
         }
-      } catch let lError {
-        self.error = lError
       }
     }
     
@@ -127,16 +124,7 @@ public extension XcodeTool {
   }
   
   public class func template(file pFile:String) -> Template? {
-    var lRet:Template? = nil
-    
-    if let lData = readData(file: pFile) {
-      do {
-        lRet = try JSONDecoder().decode(Template.self, from: lData)
-      } catch let lError {
-        self.error = lError
-      }
-    }
-    
+    let lRet:Template? = readJson(codable: Template.self, file: pFile)
     return lRet
   }
   
@@ -198,7 +186,7 @@ public extension XcodeTool {
   
   // MARK: -> Internal class
   
-  // MARK: -> Internal type alias 
+  // MARK: -> Internal type alias
   
   // MARK: -> Internal static properties
   
@@ -209,7 +197,7 @@ public extension XcodeTool {
   // MARK: -> Internal init methods
   
   // MARK: -> Internal operators
-
+  
   // MARK: -> Internal methods
   
   // MARK: -
@@ -222,10 +210,10 @@ public extension XcodeTool {
   
   // MARK: -> Private class
   
-  // MARK: -> Private type alias 
-
+  // MARK: -> Private type alias
+  
   // MARK: -> Private static properties
-
+  
   // MARK: -> Private properties
   
   // MARK: -> Private class methods
@@ -233,6 +221,7 @@ public extension XcodeTool {
   // MARK: -> Private init methods
   
   // MARK: -> Private operators
-
+  
   // MARK: -> Private methods
 }
+

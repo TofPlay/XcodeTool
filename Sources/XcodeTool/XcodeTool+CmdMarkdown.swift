@@ -58,9 +58,9 @@ public extension XcodeTool {
         
         lFolder = norm(path: lFolder)
         
-        let lDoc = pVars["docs"] ?? norm(path:lParent) + "Docs/"
-        let lOne = pVars["one"] ?? ""
-        let lMain = pVars["main"] ?? ""
+        let lDoc = pVars["docs"].unwrappedOr(default: norm(path:lParent) + "Docs/")
+        let lOne = pVars["one"].unwrappedOr(default: "")
+        let lMain = pVars["main"].unwrappedOr(default: "")
         var lMarkdownMain = ""
         
         if exist(path: lDoc) == false {

@@ -3,7 +3,7 @@
   "name": "XcodeTool",
   "templates": "https://github.com/TofPlay/XcodeToolTemplates.git",
   "source": "https://raw.githubusercontent.com/TofPlay/XcodeTool/master/Templates.json",
-  "version": "0.0.1",
+  "branch": "1.0.4",
   "description": "XcodeTool default templates",
   "author": "Christophe Braud"
 }

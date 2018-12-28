@@ -25,6 +25,10 @@ public class XcodeTool : ScriptKit {
   
   // MARK: -> Public static properties
   
+  public static var xcodeToolVersion = "1.0.4"
+  public static var xcodeToolDefaultTemplates = "https://raw.githubusercontent.com/TofPlay/XcodeTool/master/Templates.json"
+  public static var xcodeToolRepository =  "https://github.com/TofPlay/XcodeTool.git"
+  
   // MARK: -> Public properties
   
   // MARK: -> Public class methods
@@ -34,7 +38,19 @@ public class XcodeTool : ScriptKit {
   // MARK: -
   
   public class func main() {
-    program(version: "1.0.3", owner: "Christophe Braud", year: "2018", info: "Collection of tools for Xcode projects")
+    program(version: xcodeToolVersion, owner: "Christophe Braud", year: "2018", info: "Collection of tools for Xcode projects")
+    
+      cmd("self", title: "Actions on XcodeTool itself")
+        begin()
+          cmd("update", title: "check and install the latest version of XcodeTool", handler: CmdSelf.update)
+            option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
+          cmd("reset", title: "reset default sources and templates", handler: CmdSelf.reset)
+            option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
+          cmd("clean", title: "Clean install XcodeTool", handler: CmdSelf.install)
+            option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
+          cmd("uninstall", title: "uninstall XcodeTool", handler: CmdSelf.uninstall)
+            option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
+        end()
     
       cmd("project", title: "Actions on projects")
         begin()
@@ -45,7 +61,7 @@ public class XcodeTool : ScriptKit {
             option(short: "g", long: "git", variable: "git", optional: true, title: "Rename projet on the git repository. By default not used.")
             option(short: "s", long: "submodule", variable: "submodule", optional: true, title: "Rename projet on .gitmodules. By default not used.")
             option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
-            option(long: "list", variable: "list", value: "list of files or extensions", optional: true, title: "List of supported extensions. By default Podfile, swift,h,m,storyboard,xib,md,plist,json,strings,png,pbxproj,xcworkspacedata,xcscheme,appiconset")
+            option(long: "list", variable: "list", value: "list of files or extensions", optional: true, title: "List of supported exts or files. By default Podfile,swift,h,m,storyboard,xib,md,plist,json,strings,png,pbxproj,xcworkspacedata,xcscheme,appiconset")
             option(long: "remove", variable: "remove", value: "list of files or folders", optional: true, title: "List of files or directories to delete. By default xcuserdata,podspec")
             option(long: "ignore", variable: "ignore", value: "list of files or folders", optional: true, title: "List of files or directories must be ignored. By default Pods, Carthage")
             option(long: "protect", variable: "protect", value: "list of sequences", optional: true, title: "List of sequences must be protected. By default none")
@@ -53,16 +69,23 @@ public class XcodeTool : ScriptKit {
             option(long: "createdAt", variable: "createdAt", value: "DD/MM/YYYY", optional: true, title: "Specify the creation date")
             option(long: "copyRightYear", variable: "copyRightYear", value: "YYYY", optional: true, title: "Specify copyright year")
             option(long: "copyRightName", variable: "copyRightName", value: "name", optional: true, title: "Specify copyright name")
+            begin()
+              cmd("json", title: "Replace all parameters by a json", handler: CmdProject.rename)
+                option(short: "f", long: "file", variable: "file", value: "file", optional: false, title: "Json file with all parameters")
+                option(short: "g", long: "generate", variable: "generate", optional: true, title: "Generate a template of the json file")
+            end()
         end()
 
-      cmd("template", title: "Manage predefine templates that you can used to create your own project", handler: CmdTemplate.root)
+      cmd("template", title: "Manage predefine templates that you can used to create your own project", handler: CmdTemplate.apply)
         option(short: "n", long: "name", variable: "name", value: "name", optional: false, title: "Name of the template")
-        option(short: "t", long: "target", variable: "target", value: "directory", optional: false, title: "Target directory where the project is cloned. The last folder is also the name of the project.")
         option(short: "x", long: "xcode", variable: "xcode", optional: true, title: "Generate Xcode project for template base on SwiftPM")
         option(short: "b", long: "branch", variable: "branch", optional: true, title: "Use a specific branch of the template")
-        option(short: "a", long: "tag", variable: "tag", optional: true, title: "Use a specific tag of the template")
+        option(short: "t", long: "tag", variable: "tag", optional: true, title: "Use a specific tag of the template")
+        option(short: "r", long: "target", variable: "target", optional: true, title: "Specific the target. Equivalent to using the command --alias = '{\"TARGET\":\"target\"}'")
+        option(short: "a", long: "alias", variable: "alias", value: "json or file", optional: true, title: "Alias used by the template. Must define a key TARGET.")
         option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
-        option(long: "list", variable: "list", value: "list of files or extensions", optional: true, title: "List of supported extensions. By default Podfile, swift,h,m,storyboard,xib,md,plist,json,strings,png,pbxproj,xcworkspacedata,xcscheme,appiconset")
+        option(long: "source", variable: "source", value: "source name", optional: true, title: "Select a source. By default used default sources")
+        option(long: "list", variable: "list", value: "list of files or extensions", optional: true, title: "List of supported exts or files. By default Podfile,swift,h,m,storyboard,xib,md,plist,json,strings,png,pbxproj,xcworkspacedata,xcscheme,appiconset")
         option(long: "remove", variable: "remove", value: "list of files or folders", optional: true, title: "List of files or directories to delete. By default xcuserdata,podspec")
         option(long: "ignore", variable: "ignore", value: "list of files or folders", optional: true, title: "List of files or directories must be ignored. By default Pods, Carthage")
         option(long: "protect", variable: "protect", value: "list of sequences", optional: true, title: "List of sequences must be protected. By default none")
@@ -77,8 +100,9 @@ public class XcodeTool : ScriptKit {
               option(short: "n", long: "name", variable: "name", value: "name", optional: false, title: "Source's name")
               option(short: "t", long: "templates", variable: "templates", value: "url", optional: false, title: "Repository where we have a list of json. One json by template.")
               option(short: "s", long: "source", variable: "url", value: "url", optional: true, title: "Source's url")
-              option(short: "i", long: "version", variable: "version", value: "version", optional: true, title: "Source's version")
               option(short: "d", long: "description", variable: "description", value: "description", optional: true, title: "Source's description")
+              option(short: "b", long: "branch", variable: "branch", value: "name", optional: true, title: "Template's branch")
+              option(short: "g", long: "tag", variable: "tag", value: "name", optional: true, title: "Template's tag")
               option(short: "a", long: "author", variable: "author", value: "author", optional: true, title: "Source's author")
               option(short: "f", long: "file", variable: "file", value: "file", optional: true, title: "Store the json in this file. By default use <current directory + source's name + '.json'>")
               option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
@@ -98,14 +122,16 @@ public class XcodeTool : ScriptKit {
             option(short: "n", long: "name", variable: "name", value: "name", optional: false, title: "Template's name")
             option(short: "u", long: "url", variable: "url", value: "url", optional: false, title: "Template's url. Must terminate by '.xtemplate' or '.xtemplate.git'")
             option(short: "d", long: "description", variable: "description", value: "description", optional: true, title: "Template's description")
-            option(short: "o", long: "original", variable: "original", value: "name", optional: true, title: "Original name of the template project")
             option(short: "b", long: "branch", variable: "branch", value: "name", optional: true, title: "Template's branch")
             option(short: "t", long: "tag", variable: "tag", value: "name", optional: true, title: "Template's tag")
-            option(short: "p", long: "protect", variable: "protect", value: "string", optional: true, title: "Sequence to protect")
-            option(short: "i", long: "version", variable: "version", value: "version", optional: true, title: "Template's version")
             option(short: "a", long: "author", variable: "author", value: "author", optional: true, title: "Template's author")
             option(short: "f", long: "file", variable: "file", value: "json file", optional: true, title: "Store the json in this file. By default use <current directory + template's name + '.json'>")
+            option(short: "p", long: "patch", variable: "patch", value: "patch", optional: true, title: "patch file. By default XcodeTool.json")
             option(short: "v", long: "verbose", variable: "verbose", optional: true, title: "Display more informations")
+            begin()
+              cmd("patch", title: "Generate json patch file for a template project", handler: CmdTemplate.patch)
+                option(short: "f", long: "file", variable: "file", value: "file", optional: false, title: "Json patch file name")
+            end()
           cmd("ls", title: "List templates available", handler: CmdTemplate.ls)
             option(short: "s", long: "source", variable: "source", value: "name", optional: true, title: "Specificy a source. Default value 'XcodeTool'")
         end()
@@ -160,7 +186,7 @@ public class XcodeTool : ScriptKit {
     ...
     """)
     
-    if initialize() == false {
+    if CmdSelf.initialize() == false {
       display(type: .error, format: "Unable to initialized XcodeTool")
     } else {
       run(arguments: CommandLine.arguments)

@@ -718,7 +718,7 @@ public extension XcodeTool {
         
         display(type: .yes, format: "found \(lRuntimes.count) runtimes")
         
-        let lDevices = simDevices() ?? []
+        let lDevices = simDevices().unwrappedOr(default: [])
         
         display(type: .compute, format: "scan existing simulators...")
         

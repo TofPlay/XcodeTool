@@ -26,7 +26,7 @@ public class XcodeTool : ScriptKit {
   // MARK: -> Public static properties
   
   public static var xcodeToolVersion = "1.0.4"
-  public static var xcodeToolDefaultTemplates = "https://raw.githubusercontent.com/TofPlay/XcodeTool/master/Templates.json"
+  public static var xcodeToolDefaultTemplates = "https://raw.githubusercontent.com/TofPlay/XcodeTool/1.0.4/Templates.json"
   public static var xcodeToolRepository =  "https://github.com/TofPlay/XcodeTool.git"
   
   // MARK: -> Public properties

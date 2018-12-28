@@ -170,11 +170,19 @@ public extension XcodeTool {
             let lDefaultTempates = pathTemplates + lSource.uuid
             var lDone = false
             
-            let lBackupSource = cp(path: lPathDefaultSource, to: lPathDefaultSource + ".old", overwrite: true)
-            display(type: lBackupSource ? .yes : .no, format: "created a backup of default source")
+            var lBackupSource = true
+            
+            if exist(path: lPathDefaultSource) {
+              lBackupSource = cp(path: lPathDefaultSource, to: lPathDefaultSource + ".old", overwrite: true)
+              display(type: lBackupSource ? .yes : .no, format: "created a backup of default source")
+            }
 
-            let lBackupTemplates = cp(path: lDefaultTempates, to: lDefaultTempates + ".old", overwrite: true)
-            display(type: lBackupTemplates ? .yes : .no, format: "created a backup of previous templates")
+            var lBackupTemplates = true
+            
+            if isDir(lDefaultTempates) {
+              lBackupTemplates = cp(path: lDefaultTempates, to: lDefaultTempates + ".old", overwrite: true)
+              display(type: lBackupTemplates ? .yes : .no, format: "created a backup of previous templates")
+            }
 
             if lBackupSource && lBackupTemplates {
               lDone = writeJson(file: lPathDefaultSource, object: lSource)

@@ -122,7 +122,7 @@ public extension XcodeTool {
     public func add(files pFiles:[Item.File]? = nil, original pOriginal:String, new pNew:String) -> Bool {
       var lRet = false
       
-      if pOriginal != pNew && pOriginal.isEmpty == false && pNew.isEmpty {
+      if pOriginal != pNew && pOriginal.isEmpty == false && pNew.isEmpty == false {
         let lItem =  Item(files: pFiles, original: pOriginal, new: pNew)
         
         if let lIndex = items.index(where: {$0.original == pOriginal}) {

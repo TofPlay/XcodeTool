@@ -47,7 +47,7 @@ public extension XcodeTool {
         case verbose
       }
 
-      public var version: String = "1.0.4"
+      public var version: String = XcodeTool.version.progam
       public var path: String!
       public var git: Bool?
       public var submodule: Bool?
@@ -177,8 +177,8 @@ public extension XcodeTool {
           lParams.protect = Patch.Constant.protect
           lParams.alias = ["NEW":"new"]
           lParams.items = [
-            Patch.Item(original: "original", new: "new"),
-            Patch.Item(enable: false, files: [Patch.Item.File(name: "SpecificFile1.swift")], original: "original", new: "new"),
+            Patch.Item(original: "original", new: "$(NEW)"),
+            Patch.Item(enable: false, files: [Patch.Item.File(name: "SpecificFile1.swift")], original: "original", new: "$(NEW)"),
             Patch.Item(enable: false, files: [Patch.Item.File(name: "SpecificFile2.swift", continue: false, lines:[5,10,15,20])], original: "original", new: "$(NEW)")
           ]
           
@@ -210,8 +210,8 @@ public extension XcodeTool {
 
         let lPath = pVars["path"].unwrappedOr(default: ".")
 
-        if lParams.add(original: pVars["original"].unwrappedOr(default: name(path: lPath)), new: lNew) {
-          display(type: .no, format: "parameter <original> and <new> must be different")
+        if lParams.add(original: pVars["original"].unwrappedOr(default: name(path: lPath)), new: lNew) == false {
+          display(type: .no, format: "parameters <original> and <new> must be differents")
           return
         }
 

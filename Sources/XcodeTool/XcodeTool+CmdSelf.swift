@@ -185,12 +185,28 @@ public extension XcodeTool {
             }
 
             if lBackupSource && lBackupTemplates {
-              lDone = writeJson(file: lPathDefaultSource, object: lSource)
-              display(type: lDone ? .yes : .no, format: "installed latest default source")
+              if isDir(lDefaultTempates) {
+                if let lRemoteUrl = Git.remoteUrl(path: lDefaultTempates), lRemoteUrl != lSource.templates {
+                  lDone = rmdir(path: lDefaultTempates)
+                  
+                  if lDone {
+                    lDone = Git.clone(url: lSource.templates, branch: lSource.branch, tag: lSource.tag, target: lDefaultTempates, display: false) == 0
+                  }
+                }
+              }
               
               if lDone {
-                lDone = Git.clone(url: lSource.templates, branch: lSource.branch, tag: lSource.tag, target: lDefaultTempates, display: false) == 0
-                display(type: lDone ? .yes : .no, format: "installed latest default templates")
+                lDone = writeJson(file: lPathDefaultSource, object: lSource)
+                display(type: lDone ? .yes : .no, format: "installed latest default source")
+                
+                if lDone {
+                  lDone = Git.pull(path: lDefaultTempates) == 0
+                  
+                  if lDone {
+                    lDone = Git.checkout(path: lDefaultTempates, branch: lSource.branch, tag: lSource.tag)
+                  }
+                  display(type: lDone ? .yes : .no, format: "installed latest default templates")
+                }
               }
             }
             

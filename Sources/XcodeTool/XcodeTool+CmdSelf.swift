@@ -168,8 +168,6 @@ public extension XcodeTool {
     
           if let lSource = readJson(codable: Source.self, url: xcodeToolDefaultTemplates) {
             let lDefaultTempates = pathTemplates + lSource.uuid
-            var lDone = false
-            
             var lBackupSource = true
             
             if exist(path: lPathDefaultSource) {
@@ -184,7 +182,9 @@ public extension XcodeTool {
               display(type: lBackupTemplates ? .yes : .no, format: "created a backup of previous templates")
             }
 
-            if lBackupSource && lBackupTemplates {
+            var lDone = lBackupSource && lBackupTemplates
+            
+            if lDone {
               if isDir(lDefaultTempates) {
                 if let lRemoteUrl = Git.remoteUrl(path: lDefaultTempates), lRemoteUrl != lSource.templates {
                   lDone = rmdir(path: lDefaultTempates)

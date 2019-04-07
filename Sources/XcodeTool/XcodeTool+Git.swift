@@ -12,7 +12,7 @@ import Foundation
 // MARK: -
 // MARK: XcodeTool extension
 // MARK: -
-public extension XcodeTool {
+extension XcodeTool {
   // MARK: -
   // MARK: XcodeTool.Git
   // MARK: -

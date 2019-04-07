@@ -12,7 +12,7 @@ import Foundation
 // MARK: -
 // MARK: XcodeTool extension
 // MARK: -
-public extension XcodeTool {
+extension XcodeTool {
 
   // MARK: -
   // MARK: XcodeTool.Patch
@@ -125,7 +125,7 @@ public extension XcodeTool {
       if pOriginal != pNew && pOriginal.isEmpty == false && pNew.isEmpty == false {
         let lItem =  Item(files: pFiles, original: pOriginal, new: pNew)
         
-        if let lIndex = items.index(where: {$0.original == pOriginal}) {
+        if let lIndex = items.firstIndex(where: {$0.original == pOriginal}) {
           items[lIndex] = lItem
         } else {
           items.append(lItem)
@@ -138,7 +138,7 @@ public extension XcodeTool {
     }
     
     public func del(original pOriginal:String) {
-      if let lIndex = items.index(where: {$0.original == pOriginal}) {
+      if let lIndex = items.firstIndex(where: {$0.original == pOriginal}) {
         items.remove(at: lIndex)
       }
     }

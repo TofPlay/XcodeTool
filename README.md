@@ -3,9 +3,9 @@
 </p>
 
 
-![macOS](https://img.shields.io/badge/macOS-10.13.6-6193DF.svg)
-![Xcode](https://img.shields.io/badge/Xcode-10.1-6193DF.svg)
-![Swift Version](https://img.shields.io/badge/Swift-4.2-orange.svg) 
+![macOS](https://img.shields.io/badge/macOS-10.14.4-6193DF.svg)
+![Xcode](https://img.shields.io/badge/Xcode-10.2-6193DF.svg)
+![Swift Version](https://img.shields.io/badge/Swift-5.0-orange.svg) 
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager) 
 ![Plaform](https://img.shields.io/badge/Platform-macOS-lightgrey.svg)
 ![License MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg) 

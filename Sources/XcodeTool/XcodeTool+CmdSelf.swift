@@ -12,7 +12,7 @@ import Foundation
 // MARK: -
 // MARK: XcodeTool extension
 // MARK: -
-public extension XcodeTool {
+extension XcodeTool {
   
   // MARK: -
   // MARK: CmdSelf
@@ -62,6 +62,9 @@ public extension XcodeTool {
               lDone = lAppUrl.hasPrefix(lRemoteUrl) == true && lTags.contains(xcodeToolVersion)
             }
             
+            if lDone {
+                lDone = exist(path: "/usr/local/bin/XcodeTool")
+            }
           }
           
           if lDone == false {
@@ -111,7 +114,7 @@ public extension XcodeTool {
                       
                       display(type: .trace, verbose: true, format: pLine)
                       
-                      if let lPath = pLine.replace(regEx: "Linking .(.*)", template: "$1") {
+                      if let lPath = pLine.replace(regEx: ".*Linking .(.*)", template: "$1") {
                         lBinary = lRepository + lPath
                       }
                     }
@@ -185,14 +188,16 @@ public extension XcodeTool {
             var lDone = lBackupSource && lBackupTemplates
             
             if lDone {
+              lDone = exist(path: lDefaultTempates) == false
               if isDir(lDefaultTempates) {
                 if let lRemoteUrl = Git.remoteUrl(path: lDefaultTempates), lRemoteUrl != lSource.templates {
-                  lDone = rmdir(path: lDefaultTempates)
+                  lDone = true
+                }
+              }
                   
                   if lDone {
+                rmdir(path: lDefaultTempates)
                     lDone = Git.clone(url: lSource.templates, branch: lSource.branch, tag: lSource.tag, target: lDefaultTempates, display: false) == 0
-                  }
-                }
               }
               
               if lDone {

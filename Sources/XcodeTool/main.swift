@@ -25,7 +25,7 @@ public class XcodeTool : ScriptKit {
   
   // MARK: -> Public static properties
   
-  public static var xcodeToolVersion = "1.0.5"
+  public static var xcodeToolVersion = "1.0.6"
   public static var xcodeToolDefaultTemplates = "https://raw.githubusercontent.com/TofPlay/XcodeTool/\(xcodeToolVersion)/Templates.json"
   public static var xcodeToolRepository =  "https://github.com/TofPlay/XcodeTool.git"
   
@@ -38,7 +38,7 @@ public class XcodeTool : ScriptKit {
   // MARK: -
   
   public class func main() {
-    program(version: xcodeToolVersion, owner: "Christophe Braud", year: "2018", info: "Collection of tools for Xcode projects")
+    program(version: xcodeToolVersion, owner: "Christophe Braud", year: "2019", info: "Collection of tools for Xcode projects")
     
       cmd("self", title: "Actions on XcodeTool itself")
         begin()
